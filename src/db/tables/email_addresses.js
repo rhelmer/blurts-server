@@ -169,7 +169,8 @@ async function _verifySubscriber (emailHash) {
 
 // Verifies new emails added by existing users
 async function _verifyNewEmail (emailHash) {
-  await subscribeHash(emailHash.sha1)
+  // FIXME skip this in dev/stage mode?
+  // await subscribeHash(emailHash.sha1)
 
   const verifiedEmail = await knex('email_addresses')
     .where('id', '=', emailHash.id)
