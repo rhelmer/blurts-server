@@ -48,7 +48,8 @@ const requiredEnvVars = [
   'SESSION_DURATION_HOURS',
   'SMTP_URL',
   'SUPPORTED_LOCALES',
-  'GLEAN_DEBUG_VIEW'
+  'GLEAN_DEBUG_VIEW',
+  'GLEAN_UUID_NAMESPACE'
 ]
 
 const optionalEnvVars = [
