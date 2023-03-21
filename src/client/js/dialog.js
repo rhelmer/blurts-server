@@ -29,7 +29,7 @@ function handleEvent (e) {
     case e.target.matches('a[href*="dialog/"]'):
       e.preventDefault()
       openDialog(e.target.href)
-      gtag('event', 'click', { event_category: 'select_content', event_label: 'verify email' })
+      gtag('event', 'click', { event_category: 'form_submit', event_label: 'verify email' })
       break
     case e.target.matches('button[data-dialog]'):
       openDialog(`dialog/${e.target.dataset.dialog}`)

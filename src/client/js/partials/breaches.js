@@ -66,7 +66,7 @@ function handleEvent (e) {
     case e.type === 'email-added':
       state.emailCount = e.detail.newEmailCount
       renderZeroState()
-      gtag('event', 'click', { event_category: 'select_content', event_label: 'add email' })
+      gtag('event', 'click', { event_category: 'form_submit', event_label: 'add email' })
       break
   }
 }
