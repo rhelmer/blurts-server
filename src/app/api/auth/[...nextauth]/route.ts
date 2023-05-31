@@ -19,6 +19,7 @@ interface FxaProfile {
   /** URL to an avatar image for the current user */
   avatar: string;
   avatarDefault: boolean;
+  subscriber: boolean;
 }
 
 export const authOptions: AuthOptions = {
@@ -76,6 +77,7 @@ export const authOptions: AuthOptions = {
         token.metricsEnabled = profile.metricsEnabled;
         token.avatar = profile.avatar;
         token.avatarDefault = profile.avatarDefault;
+        token.subscriptions = profile.subscriptions;
       }
       return token;
     },
@@ -85,6 +87,7 @@ export const authOptions: AuthOptions = {
       session.user.metricsEnabled = token.metricsEnabled;
       session.user.avatar = token.avatar;
       session.user.avatarDefault = token.avatarDefault;
+      session.user.subscriber = token.subscriptions.includes("monitor");
       return session;
     },
   },

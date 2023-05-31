@@ -57,6 +57,11 @@ export const UserMenu = ({ session, fxaSettingsUrl }: Props) => {
           <hr />
         </li>
         <li>
+          <p className="user-menu-header">
+            Subscriber? {session.user?.subscriber ? "yes" : "no"}
+          </p>
+        </li>
+        <li>
           <a href="/user/settings" className="user-menu-link">
             <Image alt="" src={SettingsIcon} />
             {l10n.getString("menu-item-settings")}

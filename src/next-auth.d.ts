@@ -29,6 +29,7 @@ declare module "next-auth" {
       /** URL to an avatar image for the current user */
       avatar: string;
       avatarDefault: boolean;
+      subscriber: boolean;
     } & DefaultSession["user"];
   }
 }
