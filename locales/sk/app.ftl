@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
@@ -6,12 +11,12 @@
 
 -product-name =
     { $case ->
-       *[nom] Firefox Monitor
-        [gen] Firefox Monitora
-        [dat] Firefox Monitoru
-        [acc] Firefox Monitor
-        [loc] Firefox Monitore
-        [ins] Firefox Monitorom
+        [gen] Mozilla Monitora
+        [dat] Mozilla Monitoru
+        [acc] Mozilla Monitor
+        [loc] Mozilla Monitore
+        [ins] Mozilla Monitorom
+       *[nom] Mozilla Monitor
     }
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name =
@@ -79,6 +84,8 @@ user-add-duplicate-email = Táto e‑mailová adresa už bola do { -product-name
 #   $preferencesLink (String) - Link to preferences
 #   $userEmail (String) - User email address
 user-add-duplicate-email-part-2 = Ak chcete zistiť stav e‑mailovej adresy { $userEmail }, prejdite do sekcie { $preferencesLink }.
+user-add-verification-email-just-sent = Ďalší overovací e‑mail nie je možné odoslať takto rýchlo. Skúste to znovu neskôr.
+user-add-unknown-error = Pri pridávaní ďalšej e‑mailovej adresy sa vyskytla chyba. Skúste to znova neskôr.
 error-headline = Chyba
 user-verify-token-error = Vyžaduje sa overovací token.
 user-verify-email-report-subject = Vaša správa z { -product-name(case: "gen") }.
@@ -759,14 +766,23 @@ ad-unit-6-before-you-complete = Pred dokončením vašej ďalšej registrácie p
         [loc] Firefoxe
         [ins] Firefoxom
     }
+-brand-monitor =
+    { $case ->
+        [gen] Monitora
+        [dat] Monitoru
+        [acc] Monitor
+        [loc] Monitore
+        [ins] Monitorom
+       *[nom] Monitor
+    }
 -brand-fx-monitor =
     { $case ->
-        [gen] Firefox Monitora
-        [dat] Firefox Monitoru
-        [acc] Firefox Monitor
-        [loc] Firefox Monitore
-        [ins] Firefox Monitorom
-       *[nom] Firefox Monitor
+        [gen] Mozilla Monitora
+        [dat] Mozilla Monitoru
+        [acc] Mozilla Monitor
+        [loc] Mozilla Monitore
+        [ins] Mozilla Monitorom
+       *[nom] Mozilla Monitor
     }
 -brand-mozilla =
     { $case ->
@@ -783,45 +799,19 @@ ad-unit-6-before-you-complete = Pred dokončením vašej ďalšej registrácie p
 -brand-github = GitHub
 -brand-mozilla-vpn = Mozilla VPN
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor =
+    { $case ->
+        [gen] Mozilla Monitora
+        [dat] Mozilla Monitoru
+        [acc] Mozilla Monitor
+        [loc] Mozilla Monitore
+        [ins] Mozilla Monitorom
+       *[nom] Mozilla Monitor
+    }
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
-# and kept in English.
-# Deprecated - to be replaced by -brand-mozilla-account
--brand-fx-account =
-    { $case ->
-        [gen]
-            { $capitalization ->
-                [lower] účtu Firefox
-               *[upper] Účtu Firefox
-            }
-        [dat]
-            { $capitalization ->
-                [lower] účtu Firefox
-               *[upper] Účtu Firefox
-            }
-        [acc]
-            { $capitalization ->
-                [lower] účet Firefox
-               *[upper] Účet Firefox
-            }
-        [loc]
-            { $capitalization ->
-                [lower] účte Firefox
-               *[upper] Účte Firefox
-            }
-        [ins]
-            { $capitalization ->
-                [lower] účtom Firefox
-               *[upper] Účtom Firefox
-            }
-       *[nom]
-            { $capitalization ->
-                [lower] účet Firefox
-               *[upper] Účet Firefox
-            }
-    }
 # “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
 -brand-mozilla-account =
@@ -857,6 +847,7 @@ ad-unit-6-before-you-complete = Pred dokončením vašej ďalšej registrácie p
                *[upper] Účet Mozilla
             }
     }
+open-in-new-tab-alt = Otvoriť odkaz na novej karte
 
 ## Search Engine Optimization
 
@@ -864,8 +855,10 @@ meta-desc-2 = Zistite, či ste boli súčasťou úniku údajov pomocou služby {
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Prihlásiť sa
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
@@ -876,30 +869,53 @@ site-nav-help-link = Pomoc a podpora
 site-nav-ad-callout = Vyskúšajte naše ďalšie bezpečnostné nástroje:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+mobile-menu-label = Hlavná ponuka
+main-nav-button-collapse-label = Zbaliť ponuku
+main-nav-button-collapse-tooltip = Zbaliť ponuku
+main-nav-button-expand-label = Rozbaliť ponuku
+main-nav-button-expand-tooltip = Rozbaliť ponuku
+main-nav-label = Navigácia
+main-nav-link-home-label = Domov
+main-nav-link-dashboard-label = Nástenka
+main-nav-link-settings-label = Nastavenia
+main-nav-link-faq-label = Často kladené otázky
+main-nav-link-faq-tooltip = Často kladené otázky
 
 ## User menu
 
+# Obsolete
 menu-button-title = Ponuka používateľa
+# Obsolete
 menu-button-alt = Otvoriť používateľskú ponuku
+# Obsolete
 menu-list-accessible-label = Ponuka účtu
-# Deprecated
-menu-item-fxa = Spravovať { -brand-fx-account(case: "acc", capitalization: "lower") }
+# Obsolete
 menu-item-fxa-2 = Spravovať { -brand-mozilla-account(case: "acc", capitalization: "lower") }
-# Deprecated
-menu-item-fxa-alt = Otvoriť stránku { -brand-fx-account }
-menu-item-fxa-alt-2 = Otvoriť stránku pre { -brand-mozilla-account(case: "acc") }
+# Obsolete
 menu-item-settings = Nastavenia
-menu-item-settings-alt = Otvoriť nastavenia
+# Obsolete
 menu-item-help = Pomoc a podpora
-menu-item-help-alt = Otvoriť stránku pomoci a podpory
+# Obsolete
 menu-item-logout = Odhlásiť sa
+user-menu-trigger-label = Otvoriť ponuku používateľa
+user-menu-trigger-tooltip = Profil
+user-menu-manage-fxa-label = Spravovať { -brand-mozilla-account(case: "acc", capitalization: "lower") }
+user-menu-settings-label = Nastavenia
+user-menu-settings-tooltip = Upraviť { -brand-mozilla-monitor(case: "acc", capitalization: "lower") }
+user-menu-help-label = Pomoc a podpora
+user-menu-help-tooltip = Získať pomoc pri používaní { -brand-mozilla-monitor(case: "gen") }
+user-menu-signout-label = Odhlásiť sa
+user-menu-signout-tooltip = Odhlásiť sa z { -brand-mozilla-monitor(case: "gen") }
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Podmienky a ochrana súkromia
+terms-of-service = Podmienky používania služby
+privacy-notice = Vyhlásenie o ochrane osobných údajov
 github = { -brand-github }
 footer-nav-all-breaches = Všetky úniky údajov
+footer-external-link-faq-label = Často kladené otázky
+footer-external-link-faq-tooltip = Často kladené otázky
 
 ## Error page
 

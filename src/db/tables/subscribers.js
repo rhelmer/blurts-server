@@ -2,12 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import createDbConnection from "../connect.js";
 import { destroyOAuthToken } from '../../utils/fxa.js'
-import initKnex from 'knex'
-import knexConfig from '../knexfile.js'
 import AppConstants from '../../appConstants.js'
 
-const knex = initKnex(knexConfig)
+const knex = createDbConnection();
 const { DELETE_UNVERIFIED_SUBSCRIBERS_TIMER } = AppConstants
 
 /**
@@ -171,7 +170,7 @@ async function updateFxAData (subscriber, fxaAccessToken, fxaRefreshToken, fxaPr
     .returning('*')
   const updatedSubscriber = Array.isArray(updated) ? updated[0] : null
   if (updatedSubscriber && subscriber.fxa_refresh_token) {
-    destroyOAuthToken({ refresh_token: subscriber.fxa_refresh_token })
+    destroyOAuthToken({ token: subscriber.fxa_refresh_token, token_type_hint: "refresh_token" })
   }
   return updatedSubscriber
 }
@@ -221,10 +220,10 @@ async function removeFxAData (subscriber) {
     .returning('*')
   const updatedSubscriber = Array.isArray(updated) ? updated[0] : null
   if (updatedSubscriber && subscriber.fxa_refresh_token) {
-    await destroyOAuthToken({ refresh_token: subscriber.fxa_refresh_token })
+    await destroyOAuthToken({ token: subscriber.fxa_refresh_token,  token_type_hint: "refresh_token" })
   }
   if (updatedSubscriber && subscriber.fxa_access_token) {
-    await destroyOAuthToken({ token: subscriber.fxa_access_token })
+    await destroyOAuthToken({ token: subscriber.fxa_access_token,  token_type_hint: "access_token" })
   }
   return updatedSubscriber
 }

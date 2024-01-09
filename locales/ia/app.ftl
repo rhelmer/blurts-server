@@ -1,10 +1,15 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
 ## The following messages are brand and should be kept entirely in English
 ## unless otherwise indicated.
 
--product-name = Firefox Monitor
+-product-name = Mozilla Monitor
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name = Monitor
 -brand-name = Firefox
@@ -39,6 +44,7 @@ user-add-duplicate-email = Iste email ha jam essite addite a { -product-name }.
 #   $preferencesLink (String) - Link to preferences
 #   $userEmail (String) - User email address
 user-add-duplicate-email-part-2 = Vade sur { $preferencesLink } pro controlar le stato de { $userEmail }.
+user-add-unknown-error = Alco errate eveniva addente le adresse email. Reproba.
 error-headline = Error
 user-verify-token-error = Un token de verification es necessari.
 user-verify-email-report-subject = Tu reporto de { -product-name }
@@ -471,7 +477,7 @@ generic-confirmation-message =
        *[other] Pro vider le violationes restante, va a tu pannello de controlo.
     }
 return-to-breach-details-link = Retornar al detalios del violation
-go-to-dashboard-link = Ir al pannello de controlo
+go-to-dashboard-link = Va al pannello de controlo
 # This string appears above a breach resolution progress bar and indicates
 # the percentage of breaches a user has resolved. For instance, "27% complete".
 # Variables:
@@ -613,8 +619,8 @@ ad-unit-5-use-on-phone = Usa lo sur tu telephono
 ad-unit-5-no-matter-where = Non importa ubi tu es, crea un masca email personalisate in secundas pro toto lo que tu vole facer
 # ad 6 heading
 ad-unit-6-worry-free = Registrationes sin anxietate
-ad-unit-6-want-to-start = Vole tu initiar un nove subscription, responder a un invitation, o reciper un codice de promotion de compras sin que le SPAM inunda tu cassa de ingresso?
-ad-unit-6-before-you-complete = Ante que tu completa tu proxime registration, usa un masca email in vice de tu real adresse pro proteger tu information e mantener le controlo sur tu cassa de ingresso
+ad-unit-6-want-to-start = Vole tu initiar un nove subscription, responder a un invitation, o reciper un codice de promotion de compras sin que le spam inunda tu cassa de entrata?
+ad-unit-6-before-you-complete = Ante que tu completa tu proxime registration, usa un masca de e-mail in loco de tu adresse real pro proteger tu information e mantener le controlo sur tu cassa de entrata
 
 # Monitor V2
 
@@ -622,7 +628,8 @@ ad-unit-6-before-you-complete = Ante que tu completa tu proxime registration, us
 ## The following messages are brands and should be kept entirely in English
 
 -brand-firefox = Firefox
--brand-fx-monitor = Firefox Monitor
+-brand-monitor = Monitor
+-brand-fx-monitor = Mozilla Monitor
 -brand-mozilla = Mozilla
 -brand-premium = Premio
 -brand-monitor-premium = Monitor Premio
@@ -630,16 +637,15 @@ ad-unit-6-before-you-complete = Ante que tu completa tu proxime registration, us
 -brand-github = GitHub
 -brand-mozilla-vpn = VPN Mozilla
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor = Mozilla Monitor
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
-# and kept in English.
-# Deprecated - to be replaced by -brand-mozilla-account
--brand-fx-account = Conto Firefox
 # “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
 -brand-mozilla-account = Conto Mozilla
+open-in-new-tab-alt = Aperir le ligamine in un nove scheda
 
 ## Search Engine Optimization
 
@@ -647,8 +653,10 @@ meta-desc-2 = Discoperi si tu ha essite parte de un violation de datos con { -br
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Aperir session
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
@@ -659,30 +667,53 @@ site-nav-help-link = Adjuta e assistentia
 site-nav-ad-callout = Proba nostre altere utensiles de securitate:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+mobile-menu-label = Menu principal
+main-nav-button-collapse-label = Collaber menu
+main-nav-button-collapse-tooltip = Collaber menu
+main-nav-button-expand-label = Expander menu
+main-nav-button-expand-tooltip = Expander menu
+main-nav-label = Navigation
+main-nav-link-home-label = Initio
+main-nav-link-dashboard-label = Pannello de controlo
+main-nav-link-settings-label = Parametros
+main-nav-link-faq-label = Folios a questiones
+main-nav-link-faq-tooltip = Folio a questiones
 
 ## User menu
 
+# Obsolete
 menu-button-title = Menu de usator
+# Obsolete
 menu-button-alt = Aperir le menu de usator
+# Obsolete
 menu-list-accessible-label = Menu de conto
-# Deprecated
-menu-item-fxa = Gere tu { -brand-fx-account }
+# Obsolete
 menu-item-fxa-2 = Gere tu { -brand-mozilla-account }
-# Deprecated
-menu-item-fxa-alt = Aperir le pagina de { -brand-fx-account }
-menu-item-fxa-alt-2 = Aperir le pagina de { -brand-mozilla-account }
+# Obsolete
 menu-item-settings = Parametros
-menu-item-settings-alt = Aperir le pagina del parametros
+# Obsolete
 menu-item-help = Adjuta e supporto
-menu-item-help-alt = Aperir le pagina del  adjuta e supporto
+# Obsolete
 menu-item-logout = Clauder session
+user-menu-trigger-label = Aperir le menu de usator
+user-menu-trigger-tooltip = Profilo
+user-menu-manage-fxa-label = Gere tu { -brand-mozilla-account }
+user-menu-settings-label = Parametros
+user-menu-settings-tooltip = Configurar { -brand-mozilla-monitor }
+user-menu-help-label = Auxilio e supporto
+user-menu-help-tooltip = Obtener adjuta per { -brand-mozilla-monitor }
+user-menu-signout-label = Clauder session
+user-menu-signout-tooltip = Clauder session de { -brand-mozilla-monitor }
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Conditiones de uso e confidentialitate
+terms-of-service = Terminos de servicio
+privacy-notice = Aviso de confidentialitate
 github = { -brand-github }
 footer-nav-all-breaches = Tote le violationes
+footer-external-link-faq-label = Folios a questiones
+footer-external-link-faq-tooltip = Folio a questiones
 
 ## Error page
 

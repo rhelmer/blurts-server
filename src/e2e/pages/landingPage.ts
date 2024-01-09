@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { Locator, Page } from "@playwright/test";
+import { waitForUrlOrTimeout } from "../utils/helpers";
 
 export class LandingPage {
   readonly page: Page;
@@ -13,17 +14,17 @@ export class LandingPage {
   readonly howItWorksSec: Locator;
   readonly questionsAboutSec: Locator;
   readonly seeIfDataBreachSec: Locator;
-  readonly MozillaFooterLogoImage: Locator;
-  readonly MozillaFooterLogoLink: Locator;
-  readonly AllBreachesLink: Locator;
-  readonly FAQLink: Locator;
-  readonly TermsLink: Locator;
-  readonly GithubLink: Locator;
+  readonly mozillaFooterLogoImage: Locator;
+  readonly mozillaFooterLogoLink: Locator;
+  readonly allBreachesLink: Locator;
+  readonly faqLink: Locator;
+  readonly termsLink: Locator;
+  readonly githubLink: Locator;
   readonly landingFooter: Locator;
   readonly ourMissionLink: Locator;
   readonly seeAllFAQsLink: Locator;
   readonly falseDoorBanner: Locator;
-  readonly falseBannerCloseButton: Locator;
+  readonly falseDoorBannerCloseButton: Locator;
   readonly scanEmailAddressInput: Locator;
   readonly checkForBreachesButton: Locator;
 
@@ -38,12 +39,12 @@ export class LandingPage {
     this.howItWorksSec = page.locator(".how-it-works");
     this.questionsAboutSec = page.locator(".top-questions-about-monitor");
     this.seeIfDataBreachSec = page.locator(".see-if-data-breach");
-    this.MozillaFooterLogoImage = page.getByAltText("Mozilla");
-    this.MozillaFooterLogoLink = page.locator("footer a").first();
-    this.AllBreachesLink = page.getByRole("link", { name: "All Breaches" });
-    this.FAQLink = page.locator('footer a:has-text("faq")');
-    this.TermsLink = page.getByRole("link", { name: "Terms & Privacy" });
-    this.GithubLink = page.getByRole("link", { name: "Github" });
+    this.mozillaFooterLogoImage = page.getByAltText("Mozilla");
+    this.mozillaFooterLogoLink = page.locator("footer a").first();
+    this.allBreachesLink = page.getByRole("link", { name: "All Breaches" });
+    this.faqLink = page.locator('footer a:has-text("faq")');
+    this.termsLink = page.getByRole("link", { name: "Terms of Service" });
+    this.githubLink = page.getByRole("link", { name: "Github" });
     this.landingFooter = page.locator(".site-footer");
     this.ourMissionLink = page.locator(
       'footer a:has-text("Learn more about our mission")',
@@ -52,7 +53,7 @@ export class LandingPage {
     this.falseDoorBanner = page.locator(
       '//div[starts-with(@class, "FalseDoorBanner_falseDoorTest")]',
     );
-    this.falseBannerCloseButton = page.locator("#close-button");
+    this.falseDoorBannerCloseButton = page.locator("#close-button");
     this.scanEmailAddressInput = page.locator("#scan-email-address");
     this.checkForBreachesButton = page.getByRole("button", {
       name: "Check for breaches",
@@ -77,9 +78,10 @@ export class LandingPage {
       // identify expected URLs
       mozillaLogoUrl: "https://www.mozilla.org",
       allBreachesUrl: "/breaches",
-      FAQUrl: "/firefox-monitor-faq",
-      TermsUrl: "/privacy/firefox-monitor",
-      GithubUrl: "https://github.com/mozilla/blurts-server",
+      faqUrl: "https://support.mozilla.org/kb/firefox-monitor-faq",
+      termsUrl:
+        "https://www.mozilla.org/about/legal/terms/subscription-services/",
+      githubUrl: "https://github.com/mozilla/blurts-server",
     };
   }
 
@@ -94,13 +96,15 @@ export class LandingPage {
   }
 
   async maybeClearBanner() {
-    if (await this.falseDoorBanner.isVisible()) {
-      await this.falseBannerCloseButton.click();
+    if (await this.falseDoorBannerCloseButton.isVisible()) {
+      await this.falseDoorBannerCloseButton.click();
     }
   }
 
-  async enterScanEmail(email: string) {
+  async enterFreeScanEmail(email: string) {
     await this.scanEmailAddressInput.fill(email);
     await this.checkForBreachesButton.click();
+
+    return await waitForUrlOrTimeout(this.page, "/scan", 5000);
   }
 }

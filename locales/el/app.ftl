@@ -1,10 +1,15 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
 ## The following messages are brand and should be kept entirely in English
 ## unless otherwise indicated.
 
--product-name = Firefox Monitor
+-product-name = Mozilla Monitor
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name = Monitor
 -brand-name = Firefox
@@ -56,6 +61,8 @@ user-add-duplicate-email = Αυτό το email έχει ήδη προστεθε�
 #   $preferencesLink (String) - Link to preferences
 #   $userEmail (String) - User email address
 user-add-duplicate-email-part-2 = Επισκεφθείτε τις { $preferencesLink } σας για να ελέγξετε την κατάσταση του { $userEmail }.
+user-add-verification-email-just-sent = Δεν μπορεί να αποσταλεί άλλο email επαλήθευσης τόσο γρήγορα. Δοκιμάστε ξανά αργότερα.
+user-add-unknown-error = Κάτι πήγε στραβά με την προσθήκη της άλλης διεύθυνσης email. Δοκιμάστε ξανά αργότερα.
 error-headline = Σφάλμα
 user-verify-token-error = Απαιτείται διακριτικό επαλήθευσης.
 user-verify-email-report-subject = Η αναφορά σας για το { -product-name }
@@ -298,7 +305,7 @@ ba-next-step-blurb-3 =
     Δημιουργήστε ισχυρούς κωδικούς πρόσβασης με ένα εργαλείο διαχείρισης κωδικών. Αυτά τα πρόσθετα αποθηκεύουν με ασφάλεια όλες τις 
     συνδέσεις σας για πρόσβαση από όλες τις συσκευές σας.
 faq1 = Δεν αναγνωρίζω αυτήν την εταιρεία ή τον ιστότοπο. Γιατί είμαι σε αυτήν την παραβίαση;
-faq2 = Γιατί πέρασε τόσος καιρός μέχρι να ενημερωθώ για αυτή την παραβίαση;
+faq2 = Γιατί πέρασε τόσος καιρός μέχρι να ενημερωθώ για αυτήν την παραβίαση;
 faq3 = Πώς ξέρω αν αυτό είναι ένα γνήσιο email από το { -product-name };
 # Variables:
 #   $breachCount (Integer) - Number of breaches
@@ -376,9 +383,9 @@ error-csrf-headline = Ο χρόνος συνεδρίας έληξε
 error-csrf-blurb = Πατήστε το κουμπί "Πίσω" του προγράμματος περιήγησής σας, κάντε ανανέωση της σελίδας και δοκιμάστε ξανά.
 error-invalid-unsub = Κατάργηση εγγραφής από τις ειδοποιήσεις του { -product-name }
 error-invalid-unsub-blurb =
-    Θα πρέπει να καταργήσετε τη συνδρομή σας σε κάποιο από τα 
-    email του { -product-name }. Ελέγξτε τα εισερχόμενά σας για μηνύματα από το 
-    { -brand-team-email }. Επιλέξτε το σύνδεσμο κατάργησης εγγραφής στο κάτω μέρος.
+    Θα πρέπει να καταργήσετε τη συνδρομή σας σε κάποιο από τα email του
+    { -product-name }. Ελέγξτε τα εισερχόμενά σας για μηνύματα από το 
+    { -brand-team-email }. Επιλέξτε τον σύνδεσμο κατάργησης εγγραφής στο κάτω μέρος.
 # This string is displayed under a large numeral that indicates the total number
 # of email address a user has signed up for monitoring. Don’t add $emails to
 # your localization, because it would result in the number showing twice.
@@ -475,7 +482,7 @@ want-to-add = Θέλετε να προσθέσετε ένα άλλο email;
 # the form to add an additional email to Firefox Monitor.
 # Variables:
 #   $userEmail (String) - User email address
-verify-the-link = Επαληθεύστε το σύνδεσμο που απεστάλη στο { $userEmail } για να το προσθέσετε στο { -product-name }.
+verify-the-link = Επαληθεύστε τον σύνδεσμο που απεστάλη στο { $userEmail } για να το προσθέσετε στο { -product-name }.
 
 ## These are part of a confirmation page that appears after a user has verified
 ## an additional email to Firefox Monitor.
@@ -517,11 +524,11 @@ take-further-steps-desc = Μάθετε πώς μπορείτε να μετριά
 # This message appears after a user has successfully updated their communication settings.
 changes-saved = Οι αλλαγές αποθηκεύτηκαν!
 # Section headline
-rec-section-headline = Τι να κάνετε για αυτή την παραβίαση
+rec-section-headline = Τι να κάνετε για αυτήν την παραβίαση
 rec-section-subhead = Σας συνιστούμε να ακολουθήσετε τα παρακάτω βήματα για την προστασία των προσωπικών στοιχείων και της ψηφιακής σας ταυτότητας.
 # Section headline
 rec-section-headline-no-pw = Τι πρέπει να κάνετε για να προστατέψετε τα προσωπικά σας δεδομένα
-rec-section-subhead-no-pw = Αν και δεν εκτέθηκαν κωδικοί πρόσβασης σε αυτή την παραβίαση, υπάρχουν επιπλέον μέτρα για την προστασία των προσωπικών σας πληροφοριών.
+rec-section-subhead-no-pw = Αν και δεν εκτέθηκαν κωδικοί πρόσβασης σε αυτήν την παραβίαση, υπάρχουν επιπλέον μέτρα για την προστασία των προσωπικών σας πληροφοριών.
 # Button
 see-additional-recs = Προβολή επιπρόσθετων προτάσεων
 
@@ -530,12 +537,12 @@ see-additional-recs = Προβολή επιπρόσθετων προτάσεων
 
 # Variables:
 #   $affectedEmail (String) - User email address
-resolve-top-notification = Το { $affectedEmail } εμφανίστηκε σε αυτή την παραβίαση. <a>Τι να κάνετε στη συνέχεια</a>
+resolve-top-notification = Το { $affectedEmail } εμφανίστηκε σε αυτήν την παραβίαση. <a>Τι να κάνετε στη συνέχεια</a>
 # Variables:
 #   $numAffectedEmails (Integer) - Number of affected email address
 resolve-top-notification-plural =
     { $numAffectedEmails ->
-       *[other] { $numAffectedEmails } από τις διευθύνσεις email σας εμφανίστηκαν σε αυτή την παραβίαση. <a>Τι να κάνετε στη συνέχεια</a>
+       *[other] { $numAffectedEmails } από τις διευθύνσεις email σας εμφανίστηκαν σε αυτήν την παραβίαση. <a>Τι να κάνετε στη συνέχεια</a>
     }
 
 ##
@@ -567,7 +574,7 @@ generic-confirmation-message =
        *[other] Για να δείτε τις εναπομείνουσες διαρροές, μεταβείτε στον πίνακα ελέγχου.
     }
 return-to-breach-details-link = Επιστροφή στις λεπτομέρειες παραβίασης
-go-to-dashboard-link = Μετάβαση στον πίνακα
+go-to-dashboard-link = Μετάβαση στον πίνακα ελέγχου
 # This string appears above a breach resolution progress bar and indicates
 # the percentage of breaches a user has resolved. For instance, "27% complete".
 # Variables:
@@ -724,7 +731,8 @@ ad-unit-6-before-you-complete = Πριν ολοκληρώσετε την επό�
 ## The following messages are brands and should be kept entirely in English
 
 -brand-firefox = Firefox
--brand-fx-monitor = Firefox Monitor
+-brand-monitor = Monitor
+-brand-fx-monitor = Mozilla Monitor
 -brand-mozilla = Mozilla
 -brand-premium = Premium
 -brand-monitor-premium = Monitor Premium
@@ -732,30 +740,11 @@ ad-unit-6-before-you-complete = Πριν ολοκληρώσετε την επό�
 -brand-github = GitHub
 -brand-mozilla-vpn = Mozilla VPN
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor = Mozilla Monitor
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
-# and kept in English.
-# Deprecated - to be replaced by -brand-mozilla-account
--brand-fx-account =
-    { $case ->
-        [gen]
-            { $capitalization ->
-                [lower] λογαριασμού Firefox
-               *[upper] Λογαριασμού Firefox
-            }
-        [acc]
-            { $capitalization ->
-                [lower] λογαριασμό Firefox
-               *[upper] Λογαριασμό Firefox
-            }
-       *[nom]
-            { $capitalization ->
-                [lower] λογαριασμός Firefox
-               *[upper] Λογαριασμός Firefox
-            }
-    }
 # “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
 -brand-mozilla-account =
@@ -776,6 +765,7 @@ ad-unit-6-before-you-complete = Πριν ολοκληρώσετε την επό�
                *[upper] Λογαριασμός Mozilla
             }
     }
+open-in-new-tab-alt = Άνοιγμα συνδέσμου σε νέα καρτέλα
 
 ## Search Engine Optimization
 
@@ -783,8 +773,10 @@ meta-desc-2 = Μάθετε εάν έχετε εμπλακεί σε παραβί�
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Σύνδεση
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
@@ -795,30 +787,53 @@ site-nav-help-link = Βοήθεια και υποστήριξη
 site-nav-ad-callout = Δοκιμάστε τα άλλα εργαλεία ασφαλείας μας:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+mobile-menu-label = Κύριο μενού
+main-nav-button-collapse-label = Σύμπτυξη μενού
+main-nav-button-collapse-tooltip = Σύμπτυξη μενού
+main-nav-button-expand-label = Ανάπτυξη μενού
+main-nav-button-expand-tooltip = Ανάπτυξη μενού
+main-nav-label = Πλοήγηση
+main-nav-link-home-label = Αρχική
+main-nav-link-dashboard-label = Πίνακας ελέγχου
+main-nav-link-settings-label = Ρυθμίσεις
+main-nav-link-faq-label = Συχνές ερωτήσεις
+main-nav-link-faq-tooltip = Συχνές ερωτήσεις
 
 ## User menu
 
+# Obsolete
 menu-button-title = Μενού χρήστη
+# Obsolete
 menu-button-alt = Άνοιγμα μενού χρήστη
+# Obsolete
 menu-list-accessible-label = Μενού λογαριασμού
-# Deprecated
-menu-item-fxa = Διαχείριση { -brand-fx-account(case: "gen", capitalization: "lower") }
+# Obsolete
 menu-item-fxa-2 = Διαχείριση { -brand-mozilla-account(case: "gen", capitalization: "lower") }
-# Deprecated
-menu-item-fxa-alt = Άνοιγμα σελίδας { -brand-fx-account(case: "gen", capitalization: "lower") }
-menu-item-fxa-alt-2 = Άνοιγμα σελίδας { -brand-mozilla-account(case: "gen", capitalization: "lower") }
+# Obsolete
 menu-item-settings = Ρυθμίσεις
-menu-item-settings-alt = Άνοιγμα σελίδας ρυθμίσεων
+# Obsolete
 menu-item-help = Βοήθεια και υποστήριξη
-menu-item-help-alt = Άνοιγμα σελίδας βοήθειας και υποστήριξης
+# Obsolete
 menu-item-logout = Αποσύνδεση
+user-menu-trigger-label = Άνοιγμα μενού χρήστη
+user-menu-trigger-tooltip = Προφίλ
+user-menu-manage-fxa-label = Διαχείριση { -brand-mozilla-account(case: "gen", capitalization: "lower") }
+user-menu-settings-label = Ρυθμίσεις
+user-menu-settings-tooltip = Ρύθμιση του { -brand-mozilla-monitor }
+user-menu-help-label = Βοήθεια και υποστήριξη
+user-menu-help-tooltip = Λήψη βοήθειας με το { -brand-mozilla-monitor }
+user-menu-signout-label = Αποσύνδεση
+user-menu-signout-tooltip = Αποσύνδεση από το { -brand-mozilla-monitor }
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Όροι και απόρρητο
+terms-of-service = Όροι υπηρεσίας
+privacy-notice = Σημείωση απορρήτου
 github = { -brand-github }
 footer-nav-all-breaches = Όλες οι παραβιάσεις
+footer-external-link-faq-label = Συχνές ερωτήσεις
+footer-external-link-faq-tooltip = Συχνές ερωτήσεις
 
 ## Error page
 

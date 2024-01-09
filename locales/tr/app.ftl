@@ -1,10 +1,15 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
 ## The following messages are brand and should be kept entirely in English
 ## unless otherwise indicated.
 
--product-name = Firefox Monitor
+-product-name = Mozilla Monitor
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name = Monitor
 -brand-name = Firefox
@@ -39,6 +44,7 @@ user-add-duplicate-email = Bu e-posta zaten { -product-name }'e eklenmiş.
 #   $preferencesLink (String) - Link to preferences
 #   $userEmail (String) - User email address
 user-add-duplicate-email-part-2 = { $userEmail } adresinin durumunu kontrol etmek için { $preferencesLink }inizi ziyaret edin.
+user-add-unknown-error = Başka bir e-posta adresi eklenirken bir sorun oluştu. Lütfen daha sonra yeniden deneyin.
 error-headline = Hata
 user-verify-token-error = Doğrulama jetonu gerekli.
 user-verify-email-report-subject = { -product-name } raporunuz
@@ -645,7 +651,8 @@ ad-unit-6-before-you-complete = Siteye kaydolurken bilgilerinizi korumak ve gele
 ## The following messages are brands and should be kept entirely in English
 
 -brand-firefox = Firefox
--brand-fx-monitor = Firefox Monitor
+-brand-monitor = Monitor
+-brand-fx-monitor = Mozilla Monitor
 -brand-mozilla = Mozilla
 -brand-premium = Premium
 -brand-monitor-premium = Monitor Premium
@@ -653,24 +660,25 @@ ad-unit-6-before-you-complete = Siteye kaydolurken bilgilerinizi korumak ve gele
 -brand-github = GitHub
 -brand-mozilla-vpn = Mozilla VPN
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor = Mozilla Monitor
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
-# and kept in English.
-# Deprecated - to be replaced by -brand-mozilla-account
--brand-fx-account = Firefox hesabı
 # “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
 -brand-mozilla-account = Mozilla hesabı
+open-in-new-tab-alt = Bağlantıyı yeni sekmede aç
 
 ## Search Engine Optimization
 
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Giriş yap
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
@@ -681,30 +689,52 @@ site-nav-help-link = Yardım ve destek
 site-nav-ad-callout = Diğer güvenlik araçlarımızı deneyin:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+mobile-menu-label = Ana menü
+main-nav-button-collapse-label = Menüyü daralt
+main-nav-button-collapse-tooltip = Menüyü daralt
+main-nav-button-expand-label = Menüyü genişlet
+main-nav-button-expand-tooltip = Menüyü genişlet
+main-nav-label = Gezinti
+main-nav-link-dashboard-label = Kontrol paneli
+main-nav-link-settings-label = Ayarlar
+main-nav-link-faq-label = SSS
+main-nav-link-faq-tooltip = Sıkça sorulan sorular
 
 ## User menu
 
+# Obsolete
 menu-button-title = Kullanıcı menüsü
+# Obsolete
 menu-button-alt = Kullanıcı menüsünü aç
+# Obsolete
 menu-list-accessible-label = Hesap menüsü
-# Deprecated
-menu-item-fxa = { -brand-fx-account }nızı yönetin
+# Obsolete
 menu-item-fxa-2 = { -brand-mozilla-account }nızı yönetin
-# Deprecated
-menu-item-fxa-alt = { -brand-fx-account } sayfasını aç
-menu-item-fxa-alt-2 = { -brand-mozilla-account } sayfasını açın
+# Obsolete
 menu-item-settings = Ayarlar
-menu-item-settings-alt = Ayarlar sayfasını aç
+# Obsolete
 menu-item-help = Yardım ve destek
-menu-item-help-alt = Yardım ve destek sayfasını aç
+# Obsolete
 menu-item-logout = Çıkış yap
+user-menu-trigger-label = Kullanıcı menüsünü aç
+user-menu-trigger-tooltip = Profil
+user-menu-manage-fxa-label = { -brand-mozilla-account }nızı yönetin
+user-menu-settings-label = Ayarlar
+user-menu-settings-tooltip = { -brand-mozilla-monitor }’ü yapılandır
+user-menu-help-label = Yardım ve destek
+user-menu-help-tooltip = { -brand-mozilla-monitor }’ün kullanımıyla ilgili yardım alın
+user-menu-signout-label = Çıkış
+user-menu-signout-tooltip = { -brand-mozilla-monitor }’den çıkış yap
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Şartlar ve gizlilik
+terms-of-service = Kullanım Koşulları
+privacy-notice = Gizlilik Bildirimi
 github = { -brand-github }
 footer-nav-all-breaches = Tüm ihlaller
+footer-external-link-faq-label = SSS
+footer-external-link-faq-tooltip = Sıkça sorulan sorular
 
 ## Error page
 

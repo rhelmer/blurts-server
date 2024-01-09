@@ -1,10 +1,15 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
 ## The following messages are brand and should be kept entirely in English
 ## unless otherwise indicated.
 
--product-name = Firefox Monitor
+-product-name = Mozilla Monitor
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name = Monitor
 -brand-name = Firefox
@@ -653,7 +658,8 @@ ad-unit-6-before-you-complete = Para se të plotësoni regjistrimin tuaj të rad
 ## The following messages are brands and should be kept entirely in English
 
 -brand-firefox = Firefox
--brand-fx-monitor = Firefox Monitor
+-brand-monitor = Monitor
+-brand-fx-monitor = Mozilla Monitor
 -brand-mozilla = Mozilla
 -brand-premium = Premium
 -brand-monitor-premium = Monitor Premium
@@ -661,24 +667,25 @@ ad-unit-6-before-you-complete = Para se të plotësoni regjistrimin tuaj të rad
 -brand-github = GitHub
 -brand-mozilla-vpn = Mozilla VPN
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor = Mozilla Monitor
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
-# and kept in English.
-# Deprecated - to be replaced by -brand-mozilla-account
--brand-fx-account = Llogari Firefox
 # “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
 -brand-mozilla-account = Llogari Mozilla
 
 ## Search Engine Optimization
 
+meta-desc-2 = Shihni nëse keni qenë pjesë e një cenimi të dhënash, me { -brand-fx-monitor }. Do t’ju ndihmojmë të kuptoni ç’të bëhet në vazhdim dhe të mbikëqyrni vazhdimisht për çfarëdo cenimesh.
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Hyni
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
@@ -689,28 +696,36 @@ site-nav-help-link = Ndihmë dhe Asistencë
 site-nav-ad-callout = Provoni mjete sigurie të tjera tonat:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+main-nav-link-settings-label = Rregullime
+main-nav-link-faq-label = PBR
+main-nav-link-faq-tooltip = Pyetje të bëra rëndom
 
 ## User menu
 
+# Obsolete
 menu-button-title = Menu përdoruesi
+# Obsolete
 menu-button-alt = Hap menu përdoruesi
+# Obsolete
 menu-list-accessible-label = Menu llogarish
-# Deprecated
-menu-item-fxa = Administroni { -brand-fx-account } tuaj
+# Obsolete
 menu-item-fxa-2 = Administroni { -brand-mozilla-account } tuaj
-# Deprecated
-menu-item-fxa-alt = Hapni faqe { -brand-fx-account }
-menu-item-fxa-alt-2 = Hapni faqe { -brand-mozilla-account }
+# Obsolete
 menu-item-settings = Rregullime
-menu-item-settings-alt = Hap faqen e rregullimeve
+# Obsolete
 menu-item-help = Ndihmë dhe asistencë
-menu-item-help-alt = Hapni faqen e ndihmës dhe asistencës
+# Obsolete
 menu-item-logout = Dilni
+user-menu-trigger-label = Hap menu përdoruesi
+user-menu-trigger-tooltip = Profil
+user-menu-manage-fxa-label = Administroni { -brand-mozilla-account } tuaj
+user-menu-settings-label = Rregullime
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Kushte & Privatësi
+terms-of-service = Kushtet e Shërbimit
+privacy-notice = Shënim Mbi Privatësinë
 github = { -brand-github }
 footer-nav-all-breaches = Krejt Cenimet
 

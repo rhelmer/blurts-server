@@ -23,6 +23,7 @@ import { BreachesTable } from "../../../components/server/BreachesTable";
 import { getComponentAsString } from "../../../functions/server/getComponentAsString";
 import { getCountryCode } from "../../../../functions/server/getCountryCode";
 import { getNonce } from "../../../functions/server/getNonce";
+import { SignInButton } from "../../../components/client/SignInButton";
 
 export function generateMetadata() {
   const l10n = getL10n();
@@ -30,14 +31,14 @@ export function generateMetadata() {
     title: l10n.getString("breach-meta-title"),
     twitter: {
       card: "summary_large_image",
-      title: l10n.getString("brand-fx-monitor"),
+      title: l10n.getString("brand-mozilla-monitor"),
       description: l10n.getString("meta-desc-2"),
       images: ["/images/og-image.webp"],
     },
     openGraph: {
-      title: l10n.getString("brand-fx-monitor"),
+      title: l10n.getString("brand-mozilla-monitor"),
       description: l10n.getString("meta-desc-2"),
-      siteName: l10n.getString("brand-fx-monitor"),
+      siteName: l10n.getString("brand-mozilla-monitor"),
       type: "website",
       url: process.env.SERVER_URL,
       images: ["/images/og-image.webp"],
@@ -68,14 +69,15 @@ declare global {
 
 export default async function UserBreaches() {
   const session = await getServerSession(authOptions);
+  if (!session?.user?.subscriber) {
+    return <SignInButton autoSignIn />;
+  }
+
   const l10n = getL10n();
   const headerList = headers();
 
   const userBreachesData: UserBreaches = await getUserBreaches({
-    // `(authenticated)/layout.tsx` ensures that `session` is not undefined,
-    // so the type assertion should be safe:
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    user: session!.user,
+    user: session.user,
     options: {
       countryCode: getCountryCode(headerList),
     },
@@ -147,14 +149,14 @@ export default async function UserBreaches() {
             <figure
               className="email-stats"
               data-count={userBreachesData.emailTotalCount}
-              data-total={AppConstants.MAX_NUM_ADDRESSES}
+              data-total={AppConstants.NEXT_PUBLIC_MAX_NUM_ADDRESSES}
             >
               <Image src={ImageIconEmail} alt="" width={55} height={30} />
               <figcaption>
                 <strong>
                   {l10n.getString("emails-monitored", {
                     count: userBreachesData.emailVerifiedCount,
-                    total: AppConstants.MAX_NUM_ADDRESSES,
+                    total: AppConstants.NEXT_PUBLIC_MAX_NUM_ADDRESSES,
                   })}
                 </strong>
                 <a href="/user/settings">

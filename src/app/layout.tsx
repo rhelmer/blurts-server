@@ -9,16 +9,22 @@ import "./globals.css";
 import { getServerSession } from "next-auth";
 import { getL10n, getL10nBundles } from "./functions/server/l10n";
 import { getLocale } from "./functions/universal/getLocale";
+import { PublicEnvProvider } from "../contextProviders/public-env";
 import { SessionProvider } from "../contextProviders/session";
 import { authOptions } from "./api/utils/auth";
 import { metropolis } from "./fonts/Metropolis/metropolis";
+
+// DO NOT ADD SECRETS: Env variables added here become public.
+const PUBLIC_ENVS = {
+  PUBLIC_APP_ENV: process.env.APP_ENV ?? "",
+} as const;
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export function generateMetadata(): Metadata {
   const l10n = getL10n();
   return {
-    title: l10n.getString("brand-fx-monitor"),
+    title: l10n.getString("brand-mozilla-monitor"),
     description: l10n.getString("meta-desc-2"),
     metadataBase:
       typeof process.env.SERVER_URL === "string"
@@ -26,14 +32,14 @@ export function generateMetadata(): Metadata {
         : undefined,
     twitter: {
       card: "summary_large_image",
-      title: l10n.getString("brand-fx-monitor"),
+      title: l10n.getString("brand-mozilla-monitor"),
       description: l10n.getString("meta-desc-2"),
       images: ["/images/og-image.webp"],
     },
     openGraph: {
-      title: l10n.getString("brand-fx-monitor"),
+      title: l10n.getString("brand-mozilla-monitor"),
       description: l10n.getString("meta-desc-2"),
-      siteName: l10n.getString("brand-fx-monitor"),
+      siteName: l10n.getString("brand-mozilla-monitor"),
       type: "website",
       url: process.env.SERVER_URL,
       images: ["/images/og-image.webp"],
@@ -58,7 +64,9 @@ export default async function RootLayout({
         data-ga4-measurement-id={process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID}
         data-node-env={process.env.NODE_ENV}
       >
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <PublicEnvProvider publicEnvs={PUBLIC_ENVS}>
+          <SessionProvider session={session}>{children}</SessionProvider>
+        </PublicEnvProvider>
       </body>
     </html>
   );

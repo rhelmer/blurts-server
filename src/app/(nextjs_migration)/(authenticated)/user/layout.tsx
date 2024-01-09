@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { v5 as uuidv5 } from "uuid";
 import { ReactNode } from "react";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
@@ -29,25 +28,14 @@ export type Props = {
 
 const MainLayout = async (props: Props) => {
   const session = await getServerSession(authOptions);
-  if (!session) {
+  if (!session?.user?.subscriber) {
     return <SignInButton autoSignIn />;
   }
 
-  const accountId = session?.user?.subscriber?.fxa_uid;
-
-  let userId = "";
-  if (accountId && typeof accountId === "string") {
-    // If the user is logged in, use a UUID based on the user's subscriber ID.
-    // TODO determine if we can collect the FxA UID directly https://mozilla-hub.atlassian.net/browse/MNTOR-2180
-    if (process.env.NIMBUS_UUID_NAMESPACE) {
-      userId = uuidv5(accountId, process.env.NIMBUS_UUID_NAMESPACE);
-    } else {
-      logger.error("NIMBUS_UUID_NAMESPACE env var not set");
-    }
-  }
+  const userId = session.user.subscriber.fxa_uid ?? "";
 
   if (!userId) {
-    logger.error("No user ID for Nimbus telemetry");
+    logger.error("No user ID for telemetry");
   }
 
   try {
@@ -71,11 +59,7 @@ const MainLayout = async (props: Props) => {
         src="/nextjs_migration/client/js/nav.js"
         nonce={getNonce()}
       />
-      <PageLoadEvent
-        userId={userId}
-        channel={process.env.APP_ENV ?? ""}
-        appEnv={process.env.APP_ENV ?? ""}
-      />
+      <PageLoadEvent userId={userId} enabledFlags={enabledFeatureFlags} />
       <header>
         <div className="header-wrapper">
           <a href="/user/breaches">
@@ -84,7 +68,7 @@ const MainLayout = async (props: Props) => {
               src={MonitorLogo}
               width="213"
               height="33"
-              alt={l10n.getString("brand-fx-monitor")}
+              alt={l10n.getString("brand-mozilla-monitor")}
               priority
             />
           </a>
@@ -105,7 +89,7 @@ const MainLayout = async (props: Props) => {
             </button>
             <UserMenu
               session={session}
-              fxaSettingsUrl={AppConstants.NEXT_PUBLIC_FXA_SETTINGS_URL}
+              fxaSettingsUrl={AppConstants.FXA_SETTINGS_URL}
               nonce={getNonce()}
               enabledFeatureFlags={enabledFeatureFlags}
             />
@@ -141,10 +125,18 @@ const MainLayout = async (props: Props) => {
           </li>
           <li>
             <a
-              href="https://www.mozilla.org/privacy/firefox-monitor"
+              href="https://www.mozilla.org/about/legal/terms/subscription-services/"
               target="_blank"
             >
-              {l10n.getString("terms-and-privacy")}
+              {l10n.getString("terms-of-service")}
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.mozilla.org/privacy/subscription-services/"
+              target="_blank"
+            >
+              {l10n.getString("privacy-notice")}
             </a>
           </li>
           <li>

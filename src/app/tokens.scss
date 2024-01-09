@@ -140,8 +140,8 @@ $color-pink-10: #ffb4db;
 $color-pink-05: #ffdef0;
 
 // Gradient
-$gradient-blue: radial-gradient(
-  100% 100% at 100% 0%,
+$gradient-blue: linear-gradient(
+  to right,
   $color-violet-50 0%,
   $color-purple-50 37.1%,
   $color-blue-40 61.4%,
@@ -262,6 +262,9 @@ $text-body-sm:
 $text-body-xs:
   400 12px / 1.5 var(--font-inter),
   sans-serif;
+$text-body-2xs:
+  400 10px / 1.5 var(--font-inter),
+  sans-serif;
 
 $tab-bar-height: 100px;
 $width-first-column-filter-bar: 90px;
@@ -312,4 +315,20 @@ $width-first-column-filter-bar: 90px;
   position: absolute;
   width: 1px;
   white-space: nowrap;
+}
+
+// CSS uppercasing is not reliable for some locales, see
+// https://mozilla-l10n.github.io/documentation/localization/dev_best_practices.html#css-issues
+// However, uppercasing the source string directly isn't great for
+// accessibility, as it will cause screen readers to spell it out:
+// https://www.timdunklee.com/notes/use-css-text-transform-for-uppercase-letters-a11y/
+// Thus, we limit the uppercasing for English for now, where uppercasing
+// is reliable enough, and fallback to regular-casing for other locales:
+@mixin uppercase-only-english {
+  [lang="en"] &,
+  [lang="en-US"] &,
+  [lang="en-CA"] &,
+  [lang="en-GB"] & {
+    text-transform: uppercase;
+  }
 }

@@ -33,7 +33,7 @@ export class DataBreachPage {
 
     // navbar
     this.dataBreachesNavbar = page.locator(".header-wrapper");
-    this.dataBreachesLogo = page.getByAltText("Firefox Monitor");
+    this.dataBreachesLogo = page.getByAltText("Mozilla Monitor");
     this.dataBreachesLogoLink = page.locator(".header-wrapper a");
     this.dataBreachesNavbarProfile = page.locator(".user-menu-button");
     this.dataBreachesNavbarProfileButton = page.locator(".nav-toggle");
@@ -43,7 +43,7 @@ export class DataBreachPage {
     this.dataBreachesNavbarProfileMenuHeader =
       page.locator(".user-menu-header");
     this.dataBreachesNavbarProfileMenuHeaderSubtitle = page.locator(
-      "a .user-menu-subtitle",
+      ".user-menu-subtitle",
     );
     this.dataBreachesNavbarProfileMenuSettings = page
       .getByLabel("Account menu")

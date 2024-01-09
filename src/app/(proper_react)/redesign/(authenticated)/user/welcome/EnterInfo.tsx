@@ -13,7 +13,7 @@ import whyWeNeedInfoHero from "./images/welcome-why-we-need-info.svg";
 import { useL10n } from "../../../../../hooks/l10n";
 import { ModalOverlay } from "../../../../../components/client/dialog/ModalOverlay";
 import { Dialog } from "../../../../../components/client/dialog/Dialog";
-import { Button } from "../../../../../components/server/Button";
+import { Button } from "../../../../../components/client/Button";
 import { InputField } from "../../../../../components/client/InputField";
 import {
   LocationAutocompleteInput,
@@ -25,6 +25,7 @@ import {
 } from "../../../../../api/v1/user/welcome-scan/create/route";
 import { meetsAgeRequirement } from "../../../../../functions/universal/user";
 import { getLocale } from "../../../../../functions/universal/getLocale";
+import { useTelemetry } from "../../../../../hooks/useTelemetry";
 
 import styles from "./EnterInfo.module.scss";
 
@@ -71,13 +72,32 @@ export const EnterInfo = ({
   const [invalidInputs, setInvalidInputs] = useState<Array<string>>([]);
   const [requestingScan, setRequestingScan] = useState(false);
 
+  const recordTelemetry = useTelemetry();
   const explainerDialogState = useOverlayTriggerState({});
   const explainerDialogTrigger = useOverlayTrigger(
     { type: "dialog" },
     explainerDialogState,
   );
 
-  const confirmDialogState = useOverlayTriggerState({});
+  const confirmDialogState = useOverlayTriggerState({
+    onOpenChange: (isOpen) => {
+      if (getInvalidFields().length > 0) {
+        return;
+      }
+
+      if (isOpen) {
+        // TODO: Uncomment popup_id after it has been added to metrics.yaml
+        // in https://github.com/mozilla/blurts-server/pull/3913.
+        recordTelemetry("popup", "view", {
+          // popup_id: "enter_scan_info_confirmation_modal",
+        });
+      } else {
+        recordTelemetry("button", "click", {
+          button_id: "edit_free_scan",
+        });
+      }
+    },
+  });
   const confirmDialogTrigger = useOverlayTrigger(
     { type: "dialog" },
     confirmDialogState,
@@ -87,31 +107,25 @@ export const EnterInfo = ({
   const userDetailsData = [
     {
       label: l10n.getString("onboarding-enter-details-label-first-name"),
-      key: "firstName",
+      key: "first_name",
       type: "text",
       placeholder: l10n.getString(
         "onboarding-enter-details-placeholder-first-name",
       ),
       value: firstName,
       displayValue: firstName,
-      errorMessage: l10n.getString(
-        "onboarding-enter-details-input-error-message-generic",
-      ),
       isValid: firstName.trim() !== "",
       onChange: setFirstName,
     },
     {
       label: l10n.getString("onboarding-enter-details-label-last-name"),
-      key: "lastName",
+      key: "last_name",
       type: "text",
       placeholder: l10n.getString(
         "onboarding-enter-details-placeholder-last-name",
       ),
       value: lastName,
       displayValue: lastName,
-      errorMessage: l10n.getString(
-        "onboarding-enter-details-input-error-message-generic",
-      ),
       isValid: lastName.trim() !== "",
       onChange: setLastName,
     },
@@ -124,15 +138,12 @@ export const EnterInfo = ({
       ),
       value: location,
       displayValue: location,
-      errorMessage: l10n.getString(
-        "onboarding-enter-details-input-error-message-location",
-      ),
       isValid: location.trim() !== "",
       onChange: setLocation,
     },
     {
       label: l10n.getString("onboarding-enter-details-label-date-of-birth"),
-      key: "dateOfBirth",
+      key: "date_of_birth",
       type: "date",
       placeholder: "",
       value: dateOfBirth,
@@ -140,9 +151,6 @@ export const EnterInfo = ({
         dateStyle: "medium",
         timeZone: "UTC",
       }),
-      errorMessage: l10n.getString(
-        "onboarding-enter-details-input-error-message-generic",
-      ),
       isValid: meetsAgeRequirement(dateOfBirth),
       onChange: setDateOfBirth,
     },
@@ -180,6 +188,11 @@ export const EnterInfo = ({
 
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    recordTelemetry("ctaButton", "click", {
+      button_id: "started_free_scan",
+    });
+
     const invalidInputKeys = getInvalidFields();
     if (invalidInputKeys?.length > 0) {
       setInvalidInputs(invalidInputKeys);
@@ -287,7 +300,12 @@ export const EnterInfo = ({
           variant="primary"
           // TODO: Figure out how to intercept the fetch request in a test:
           /* c8 ignore next */
-          onPress={() => handleRequestScan()}
+          onPress={() => {
+            recordTelemetry("ctaButton", "click", {
+              button_id: "confirmed_free_scan",
+            });
+            handleRequestScan();
+          }}
           autoFocus={true}
           className={styles.startButton}
           isLoading={requestingScan}
@@ -316,7 +334,12 @@ export const EnterInfo = ({
           ref={triggerRef}
           // TODO: Add unit test when changing this code:
           /* c8 ignore next */
-          onClick={() => explainerDialogState.open()}
+          onClick={() => {
+            recordTelemetry("button", "click", {
+              button_id: "why_do_we_need_this_info",
+            });
+            explainerDialogState.open();
+          }}
           className={styles.explainerTrigger}
         >
           {l10n.getString("onboarding-enter-details-why-button-label")}
@@ -326,34 +349,33 @@ export const EnterInfo = ({
       <form onSubmit={handleOnSubmit}>
         <div className={styles.inputContainer}>
           {userDetailsData.map(
-            ({
-              key,
-              errorMessage,
-              label,
-              onChange,
-              placeholder,
-              isValid,
-              type,
-              value,
-            }) => {
+            ({ key, label, onChange, placeholder, isValid, type, value }) => {
               const validationState =
                 !isValid && invalidInputs.includes(key) ? "invalid" : "valid";
               return key === "location" ? (
                 <LocationAutocompleteInput
                   key={key}
-                  errorMessage={errorMessage}
+                  errorMessage={l10n.getString(
+                    "onboarding-enter-details-input-error-message-location",
+                  )}
                   label={label}
                   isRequired={true}
                   onChange={onChange}
                   placeholder={placeholder}
-                  type={type}
                   validationState={validationState}
-                  value={value}
+                  inputValue={value}
+                  onFocus={() => {
+                    recordTelemetry("field", "focus", {
+                      field_id: key,
+                    });
+                  }}
                 />
               ) : (
                 <InputField
                   key={key}
-                  errorMessage={errorMessage}
+                  errorMessage={l10n.getString(
+                    "onboarding-enter-details-input-error-message-generic",
+                  )}
                   label={label}
                   isRequired={true}
                   onChange={onChange}
@@ -361,6 +383,11 @@ export const EnterInfo = ({
                   type={type}
                   validationState={validationState}
                   value={value}
+                  onFocus={() => {
+                    recordTelemetry("field", "focus", {
+                      field_id: key,
+                    });
+                  }}
                 />
               );
             },

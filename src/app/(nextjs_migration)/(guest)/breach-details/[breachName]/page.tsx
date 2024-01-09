@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Image, { StaticImageData } from "next/image";
+import { notFound } from "next/navigation";
 import BreachDetailScanImage from "../../../../../client/images/breach-detail-scan.svg";
 import "../../../../../client/css/partials/breachDetail.css";
 import { getL10n } from "../../../../functions/server/l10n";
@@ -51,7 +52,9 @@ const glyphs: Record<string, StaticImageData> = {
 export function generateMetadata(props: { params: { breachName: string } }) {
   const l10n = getL10n();
   return {
-    title: `${l10n.getString("brand-fx-monitor")} - ${props.params.breachName}`,
+    title: `${l10n.getString("brand-mozilla-monitor")} - ${
+      props.params.breachName
+    }`,
     twitter: {
       card: "summary_large_image",
       title: l10n.getString("breach-detail-meta-social-title", {
@@ -65,7 +68,7 @@ export function generateMetadata(props: { params: { breachName: string } }) {
         company: props.params.breachName,
       }),
       description: l10n.getString("breach-detail-meta-social-description"),
-      siteName: l10n.getString("brand-fx-monitor"),
+      siteName: l10n.getString("brand-mozilla-monitor"),
       type: "website",
       url: process.env.SERVER_URL,
       images: ["/images/og-image.webp"],
@@ -80,6 +83,10 @@ export default async function BreachDetail(props: {
   const breachName = props.params.breachName;
   const allBreaches = await getBreaches();
   const breach = getBreachByName(allBreaches, breachName);
+
+  if (!breach) {
+    return notFound();
+  }
 
   return (
     <div data-partial="breachDetail">

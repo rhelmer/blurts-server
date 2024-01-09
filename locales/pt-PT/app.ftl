@@ -1,10 +1,15 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
 ## The following messages are brand and should be kept entirely in English
 ## unless otherwise indicated.
 
--product-name = Firefox Monitor
+-product-name = Mozilla Monitor
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name = Monitor
 -brand-name = Firefox
@@ -39,6 +44,8 @@ user-add-duplicate-email = Este e-mail já foi adicionado ao { -product-name }.
 #   $preferencesLink (String) - Link to preferences
 #   $userEmail (String) - User email address
 user-add-duplicate-email-part-2 = Consulte as suas { $preferencesLink } para consultar o estado para { $userEmail }.
+user-add-verification-email-just-sent = Não é possível enviar outro email de verificação tão rapidamente. Por favor, tente novamente mais tarde.
+user-add-unknown-error = Algo correu mal ao adicionar outro endereço de e-mail. Por favor, tente novamente mais tarde.
 error-headline = Erro
 user-verify-token-error = É necessário um código de verificação.
 user-verify-email-report-subject = O seu relatório do { -product-name }
@@ -706,53 +713,92 @@ ad-unit-6-before-you-complete = Antes de concluir a próxima inscrição, utiliz
 ## The following messages are brands and should be kept entirely in English
 
 -brand-firefox = Firefox
--brand-fx-monitor = Firefox Monitor
+-brand-monitor = Monitor
+-brand-fx-monitor = Mozilla Monitor
 -brand-mozilla = Mozilla
+-brand-premium = Premium
+-brand-monitor-premium = Monitor Premium
 -brand-mozilla-foundation = Fundação Mozilla
 -brand-github = GitHub
 -brand-mozilla-vpn = Mozilla VPN
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor = Mozilla Monitor
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
+# “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
--brand-fx-account = Conta Firefox
+-brand-mozilla-account = Conta Mozilla
+open-in-new-tab-alt = Abrir ligação num novo separador
 
 ## Search Engine Optimization
 
+meta-desc-2 = Descubra se fez parte de uma violação de dados com o { -brand-fx-monitor }. Iremos ajudar a compreender o que fazer a seguir e mantemos uma monitorização contínua à procura de quaisquer novas violações de dados.
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Iniciar sessão
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
 site-nav-breaches-link = Resolver Violações de Dados
 site-nav-settings-link = Definições
 site-nav-help-link = Ajuda e Apoio
-# This call-out is above 2 image links for Firefox Relay and Mozilla VPN 
+# This call-out is above 2 image links for Firefox Relay and Mozilla VPN
 site-nav-ad-callout = Experimente as nossas outras ferramentas de segurança:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+mobile-menu-label = Menu principal
+main-nav-button-collapse-label = Colapsar menu
+main-nav-button-collapse-tooltip = Colapsar menu
+main-nav-button-expand-label = Expandir menu
+main-nav-button-expand-tooltip = Expandir menu
+main-nav-label = Navegação
+main-nav-link-home-label = Início
+main-nav-link-dashboard-label = Painel
+main-nav-link-settings-label = Definições
+main-nav-link-faq-label = Perguntas frequentes
+main-nav-link-faq-tooltip = Perguntas frequentes
 
 ## User menu
 
+# Obsolete
 menu-button-title = Menu do utilizador
+# Obsolete
 menu-button-alt = Abrir menu do utilizador
+# Obsolete
 menu-list-accessible-label = Menu da conta
-menu-item-fxa = Gerir a sua { -brand-fx-account }
+# Obsolete
+menu-item-fxa-2 = Gerir a sua { -brand-mozilla-account }
+# Obsolete
 menu-item-settings = Definições
+# Obsolete
 menu-item-help = Ajuda e apoio
+# Obsolete
 menu-item-logout = Terminar sessão
+user-menu-trigger-label = Abrir menu do utilizador
+user-menu-trigger-tooltip = Perfil
+user-menu-manage-fxa-label = Gerir a sua { -brand-mozilla-account }
+user-menu-settings-label = Definições
+user-menu-settings-tooltip = Configurar a { -brand-mozilla-monitor }
+user-menu-help-label = Ajuda e apoio
+user-menu-help-tooltip = Obter ajuda na utilização da { -brand-mozilla-monitor }
+user-menu-signout-label = Terminar sessão
+user-menu-signout-tooltip = Terminar sessão da { -brand-mozilla-monitor }?
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Termos e privacidade
+terms-of-service = Termos do serviço
+privacy-notice = Informação de privacidade
 github = { -brand-github }
 footer-nav-all-breaches = Todas as falhas de segurança
+footer-external-link-faq-label = Perguntas frequentes
+footer-external-link-faq-tooltip = Perguntas frequentes
 
 ## Error page
 
@@ -769,6 +815,7 @@ error-page-error-other-copy = Por favor, tente novamente ou volte mais tarde
 ## Breach overview page
 
 all-breaches-headline-2 = Todas as falhas de segurança detetadas por { -brand-fx-monitor }
+all-breaches-lead = Monitorizamos todas as violações de dados conhecidas para descobrir se a sua informação pessoal foi comprometida. Aqui está uma lista completa de todas as violações de dados que foram reportadas desde 2007.
 search-breaches = Procurar por violações de dados
 # the kind of user data exposed to hackers in data breach.
 exposed-data = Dados expostos:
@@ -776,4 +823,11 @@ exposed-data = Dados expostos:
 ## Public breach detail page
 
 find-out-if-2 = Saiba se esteve envolvido nesta falha de segurança
+find-out-if-description = Iremos ajudar a perceber muito rapidamente se o seu endereço de e-mail foi exposto nesta violação de dados e a compreender o que fazer a seguir.
 breach-detail-cta-signup = Pesquisar por falhas de segurança
+
+## Floating banner
+
+floating-banner-text = Aumente a sua segurança online com notícias, dicas e atualizações da { -brand-Mozilla }.
+floating-banner-link-label = Criar conta
+floating-banner-dismiss-button-label = Não, obrigado

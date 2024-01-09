@@ -12,6 +12,7 @@ audio-recordings = Incizime audio
 auth-tokens = Token-ë mirëfilltësimi
 avatars = Avatarë
 bank-account-numbers = Numra llogarish bankare
+beauty-ratings = Vlerësime bukurie
 biometric-data = Të dhëna biometrike
 # This string is the shortened version of "Biographies", and 
 # refers to biographical data about a user.
@@ -56,6 +57,7 @@ family-plans = Plane familjare
 family-structure = Strukturë familjare
 financial-investments = Investime financiare
 financial-transactions = Transaksione financiare
+fitness-levels = Shkallë kondicioni fizik
 flights-taken = Fluturime të bëra
 genders = Gjini
 geographic-locations = Vendndodhje gjeografike
@@ -79,6 +81,7 @@ living-costs = Kosto jetese
 # This string refers to financial loans.
 loan-information = Hollësi kredie
 login-histories = Kronologji hyrjesh
+loyalty-program-details = Hollësi programi besnikërie
 mac-addresses = Adresa MAC
 marital-statuses = Gjendje martesore
 # Mnemonic phrases are a group of words used to access the content of cryptocurrency wallets.
@@ -122,6 +125,7 @@ races = Raca
 recovery-email-addresses = Adresa email rimarrjesh
 relationship-statuses = Gjendje marrëdhëniesh
 religions = Fe
+reward-program-balances = Bilanc programi shpërblimi
 salutations = Përshëndetje
 school-grades-class-levels = nivele shkollore (klasa)
 security-questions-and-answers = Pyetje dhe përgjigje sigurie
@@ -137,6 +141,7 @@ spouses-names = Emra bashkëshortësh
 support-tickets = Kërkesa për asistencë
 survey-results = Përfundime anketimi
 taxation-records = Të dhëna tatimore
+telecommunications-carrier = Operatorë telekomunikacionesh
 time-zones = Zona kohore
 travel-habits = Zakone udhëtimesh
 user-statuses = Gjendje përdoruesi

@@ -21,7 +21,6 @@ import { getBreachesForEmail } from "../../../../../utils/hibp";
 import { getSha1 } from "../../../../../utils/fxa";
 import { getSubscriberById } from "../../../../../db/tables/subscribers";
 import { getNonce } from "../../../functions/server/getNonce";
-import { getEnabledFeatureFlags } from "../../../../../db/tables/featureFlags";
 
 const emailNeedsVerificationSub = (email: EmailRow) => {
   const l10n = getL10n();
@@ -153,9 +152,7 @@ export default async function Settings() {
   if (!session || !session.user?.subscriber) {
     return redirect("/");
   }
-  const enabledFlags = await getEnabledFeatureFlags({
-    email: session.user.email,
-  });
+
   // Re-fetch the subscriber every time, rather than reading it from `session`
   // - if the user changes their preferences on this page, the JSON web token
   // containing the subscriber data won't be updated until the next sign-in.
@@ -211,7 +208,7 @@ export default async function Settings() {
               </h3>
               <p className="settings-section-info">
                 {l10n.getString("settings-email-limit-info", {
-                  limit: AppConstants.MAX_NUM_ADDRESSES,
+                  limit: AppConstants.NEXT_PUBLIC_MAX_NUM_ADDRESSES,
                 })}
               </p>
 
@@ -222,7 +219,10 @@ export default async function Settings() {
                 data-dialog="addEmail"
                 disabled={
                   emails.length >=
-                  Number.parseInt(AppConstants.MAX_NUM_ADDRESSES, 10)
+                  Number.parseInt(
+                    AppConstants.NEXT_PUBLIC_MAX_NUM_ADDRESSES,
+                    10,
+                  )
                 }
               >
                 {l10n.getString("settings-add-email-button")}
@@ -249,23 +249,15 @@ export default async function Settings() {
                 {l10n.getString("settings-deactivate-account-title")}
               </h3>
               <p className="settings-section-info">
-                {l10n.getString(
-                  enabledFlags.includes("FxaRebrand")
-                    ? "settings-deactivate-account-info-2"
-                    : "settings-deactivate-account-info",
-                )}
+                {l10n.getString("settings-deactivate-account-info-2")}
               </p>
               <a
                 className="settings-link-fxa"
-                href={AppConstants.NEXT_PUBLIC_FXA_SETTINGS_URL}
+                href={AppConstants.FXA_SETTINGS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {l10n.getString(
-                  enabledFlags.includes("FxaRebrand")
-                    ? "settings-fxa-link-label-3"
-                    : "settings-fxa-link-label",
-                )}
+                {l10n.getString("settings-fxa-link-label-3")}
               </a>
             </section>
           </div>

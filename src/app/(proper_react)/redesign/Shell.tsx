@@ -7,21 +7,20 @@ import Image from "next/image";
 import { Session } from "next-auth";
 import styles from "./Shell.module.scss";
 import monitorLogo from "../images/monitor-logo.webp";
-import mozillaLogo from "../images/mozilla-logo.svg";
 import { MobileShell } from "./MobileShell";
 import Link from "next/link";
 import { PageLink } from "./PageLink";
 import { ExtendedReactLocalization } from "../../hooks/l10n";
 import { GaScript } from "./GaScript";
 import getPremiumSubscriptionUrl from "../../functions/server/getPremiumSubscriptionUrl";
+import { SubscriptionCheck } from "../../components/client/SubscriptionCheck";
+import { Footer } from "./Footer";
 
 export type Props = {
   l10n: ExtendedReactLocalization;
   session: Session;
   children: ReactNode;
   nonce: string;
-  monthlySubscriptionUrl: string;
-  yearlySubscriptionUrl: string;
 };
 
 export const Shell = (props: Props) => {
@@ -33,17 +32,19 @@ export const Shell = (props: Props) => {
   return (
     <>
       <GaScript nonce={props.nonce} />
+      <SubscriptionCheck />
       <MobileShell
         session={props.session}
         monthlySubscriptionUrl={monthlySubscriptionUrl}
         yearlySubscriptionUrl={yearlySubscriptionUrl}
+        fxaSettingsUrl={process.env.FXA_SETTINGS_URL!}
       >
         <div className={styles.wrapper}>
           <nav
             className={styles.mainMenu}
             aria-label={l10n.getString("main-nav-label")}
           >
-            <Link href="/" className={styles.homeLink}>
+            <Link href="/redesign/user/dashboard" className={styles.homeLink}>
               <Image
                 src={monitorLogo}
                 alt={l10n.getString("main-nav-link-home-label")}
@@ -52,7 +53,7 @@ export const Shell = (props: Props) => {
             </Link>
             <ul>
               {/* Note: If you add elements here, also add them to <MobileShell>'s navigation */}
-              <li>
+              <li key="home">
                 <PageLink
                   href="/redesign/user/dashboard"
                   activeClassName={styles.isActive}
@@ -60,7 +61,15 @@ export const Shell = (props: Props) => {
                   {l10n.getString("main-nav-link-dashboard-label")}
                 </PageLink>
               </li>
-              <li>
+              <li key="settings">
+                <PageLink
+                  href="/redesign/user/settings"
+                  activeClassName={styles.isActive}
+                >
+                  {l10n.getString("main-nav-link-settings-label")}
+                </PageLink>
+              </li>
+              <li key="faq">
                 <a
                   href="https://support.mozilla.org/kb/firefox-monitor-faq"
                   title={l10n.getString("main-nav-link-faq-tooltip")}
@@ -72,39 +81,7 @@ export const Shell = (props: Props) => {
           </nav>
           <div className={styles.content}>
             <div className={styles.page}>{props.children}</div>
-            <footer className={styles.footer}>
-              <a
-                href="https://www.mozilla.org"
-                className={styles.mozillaLink}
-                target="_blank"
-              >
-                <Image
-                  src={mozillaLogo}
-                  width={100}
-                  alt={l10n.getString("mozilla")}
-                />
-              </a>
-              <ul className={styles.externalLinks}>
-                <li>
-                  <a
-                    href="https://support.mozilla.org/kb/firefox-monitor-faq"
-                    title={l10n.getString("footer-external-link-faq-tooltip")}
-                  >
-                    {l10n.getString("footer-external-link-faq-label")}
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.mozilla.org/privacy/firefox-monitor">
-                    {l10n.getString("terms-and-privacy")}
-                  </a>
-                </li>
-                <li>
-                  <a href="https://github.com/mozilla/blurts-server">
-                    {l10n.getString("github")}
-                  </a>
-                </li>
-              </ul>
-            </footer>
+            <Footer l10n={props.l10n} />
           </div>
         </div>
       </MobileShell>

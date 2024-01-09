@@ -12,33 +12,49 @@ import styles from "./Chart.module.scss";
 import { QuestionMarkCircle } from "../server/Icons";
 import { useOverlayTrigger } from "react-aria";
 import { useOverlayTriggerState } from "react-stately";
-import { Button } from "../server/Button";
+import { Button } from "../client/Button";
 import { ModalOverlay } from "./dialog/ModalOverlay";
 import { Dialog } from "./dialog/Dialog";
 import ModalImage from "../client/assets/modal-default-img.svg";
 import { DashboardSummary } from "../../functions/server/dashboard";
+import { WaitlistDialog } from "./SubscriberWaitlistDialog";
+import { useTelemetry } from "../../hooks/useTelemetry";
 
 export type Props = {
   data: Array<[string, number]>;
   isEligibleForFreeScan: boolean;
+  isEligibleForPremium: boolean;
   scanInProgress: boolean;
   isShowFixed: boolean;
   summary: DashboardSummary;
+  totalNumberOfPerformedScans?: number;
 };
 
 export const DoughnutChart = (props: Props) => {
   const l10n = useL10n();
+  const recordTelemetry = useTelemetry();
 
-  const explainerDialogState = useOverlayTriggerState({});
+  const explainerDialogState = useOverlayTriggerState({
+    onOpenChange: (isOpen) => {
+      recordTelemetry("popup", isOpen ? "view" : "exit", {
+        popup_id: `number_of_exposures_info`,
+      });
+    },
+  });
   const explainerDialogTrigger = useOverlayTrigger(
     { type: "dialog" },
     explainerDialogState,
   );
-
+  const waitlistDialogState = useOverlayTriggerState({});
+  const waitlistDialogTrigger = useOverlayTrigger(
+    { type: "dialog" },
+    waitlistDialogState,
+  );
   const sumOfFixedExposures = props.data.reduce(
     (total, [_label, num]) => total + num,
     0,
   );
+
   const percentages = props.data.map(([label, num]) => {
     return [label, num / sumOfFixedExposures] as const;
   });
@@ -82,12 +98,23 @@ export const DoughnutChart = (props: Props) => {
   const modalContent = (
     <div className={styles.modalBodyContent}>
       <p>
-        {l10n.getString("modal-active-number-of-exposures-part-one", {
-          limit: 5,
-        })}
+        {l10n.getString(
+          props.isEligibleForPremium
+            ? "modal-active-number-of-exposures-part-one-premium"
+            : "modal-active-number-of-exposures-part-one-all",
+          {
+            limit: process.env.NEXT_PUBLIC_MAX_NUM_ADDRESSES!,
+          },
+        )}
       </p>
       <p>{l10n.getString("modal-active-number-of-exposures-part-two")}</p>
-      <p>{l10n.getString("modal-active-number-of-exposures-part-three")}</p>
+      <p>
+        {l10n.getString(
+          props.isEligibleForPremium
+            ? "modal-active-number-of-exposures-part-three-premium"
+            : "modal-active-number-of-exposures-part-three-all",
+        )}
+      </p>
       <div className={styles.confirmButtonWrapper}>
         <Button
           variant="primary"
@@ -110,9 +137,40 @@ export const DoughnutChart = (props: Props) => {
           <p>
             {l10n.getString("exposure-chart-returning-user-upgrade-prompt")}
           </p>
-          <Link href="/redesign/user/welcome">
-            {l10n.getString("exposure-chart-returning-user-upgrade-prompt-cta")}
-          </Link>
+          {typeof props.totalNumberOfPerformedScans === "undefined" ||
+          props.totalNumberOfPerformedScans <
+            parseInt(
+              process.env.NEXT_PUBLIC_ONEREP_MAX_SCANS_THRESHOLD as string,
+              10,
+            ) ? (
+            <Link
+              href="/redesign/user/welcome/free-scan?referrer=dashboard"
+              onClick={() => {
+                recordTelemetry("link", "click", {
+                  link_id: "exposures_chart_free_scan",
+                });
+              }}
+            >
+              {l10n.getString(
+                "exposure-chart-returning-user-upgrade-prompt-cta",
+              )}
+            </Link>
+          ) : (
+            <>
+              <Button
+                variant="tertiary"
+                {...waitlistDialogTrigger.triggerProps}
+              >
+                {l10n.getString(
+                  "exposure-chart-returning-user-upgrade-prompt-cta",
+                )}
+              </Button>
+              <WaitlistDialog
+                dialogTriggerState={waitlistDialogState}
+                {...waitlistDialogTrigger.overlayProps}
+              />
+            </>
+          )}
         </>
       );
     }
@@ -246,10 +304,10 @@ export const DoughnutChart = (props: Props) => {
             ? l10n.getFragment("exposure-chart-caption-fixed", {
                 vars: {
                   total_fixed_exposures_num:
-                    props.summary.dataBreachFixedExposuresNum +
-                    props.summary.dataBrokerFixedExposuresNum +
-                    props.summary.dataBrokerInProgressExposuresNum,
-                  total_exposures_num: props.summary.totalExposures,
+                    props.summary.dataBreachFixedDataPointsNum +
+                    props.summary.dataBrokerAutoFixedDataPointsNum +
+                    props.summary.dataBrokerManuallyResolvedDataPointsNum,
+                  total_exposures_num: props.summary.totalDataPointsNum,
                 },
               })
             : l10n.getString("exposure-chart-caption")}

@@ -32,11 +32,16 @@ settings-email-limit-info =
 settings-email-verification-callout = Vyžaduje sa overenie e‑mailovej adresy
 settings-resend-email-verification-link = Znova poslať overovací e‑mail
 settings-add-email-button = Pridať e‑mailovú adresu
+# Deprecated
 settings-delete-email-button = Odstrániť e‑mailovú adresu
+settings-remove-email-button-label = Odstrániť
+# Variables:
+#   $emailAddress (string) - The email address to remove, e.g. `billnye@example.com`
+settings-remove-email-button-tooltip = Zastaviť monitorovanie adresy { $emailAddress }
 # This string is shown beneath each of the user’s email addresses to indicate
 # how many known breaches that email address was found in.
 # Variables:
-#   $breachCount (numer) - Number of breaches
+#   $breachCount (number) - Number of breaches
 settings-email-number-of-breaches-info =
     { $breachCount ->
         [one] Vyskytuje sa v { $breachCount } známom úniku.
@@ -49,16 +54,11 @@ settings-email-number-of-breaches-info =
 
 settings-cancel-premium-subscription-title = Zrušiť predplatné { -brand-premium }
 settings-cancel-premium-subscription-info = Po skončení aktuálneho fakturačného cyklu sa vaše predplatné vráti na bezplatný účet. Vaše výsledky kontroly ochrany súkromia budú natrvalo odstránené a monitorovanie únikov údajov budete mať len na 1 e‑mailovej adrese.
-settings-cancel-premium-subscription-link-label = Zrušiť z vášho { -brand-fx-account(case: "gen", capitalization: "lower") }
 
 ## Deactivate account
 
 settings-deactivate-account-title = Deaktivovať účet
-# Deprecated
-settings-deactivate-account-info = Službu { -product-short-name } môžete deaktivovať odstránením svojho { -brand-fx-account(case: "gen", capitalization: "lower") }.
 settings-deactivate-account-info-2 = { -product-short-name } môžete deaktivovať odstránením svojho { -brand-mozilla-account(case: "gen", capitalization: "lower") }.
-# Deprecated
-settings-fxa-link-label = Prejsť do Nastavení { -brand-firefox(case: "gen") }
 settings-fxa-link-label-3 = Prejsť do Nastavení { -brand-mozilla-account(case: "gen", capitalization: "lowe") }
 
 ## Add email dialog

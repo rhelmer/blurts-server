@@ -1,10 +1,15 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
 # Strings for the main app
 
 
 ## The following messages are brand and should be kept entirely in English
 ## unless otherwise indicated.
 
--product-name = Firefox Monitor
+-product-name = Mozilla Monitor
 -product-name-nowrap = <span class="nowrap">{ -product-name }</span>
 -product-short-name = Monitor
 -brand-name = Firefox
@@ -39,6 +44,8 @@ user-add-duplicate-email = Det här e-postadressen har redan lagts till i { -pro
 #   $preferencesLink (String) - Link to preferences
 #   $userEmail (String) - User email address
 user-add-duplicate-email-part-2 = Besök { $preferencesLink } för att kontrollera statusen för { $userEmail }.
+user-add-verification-email-just-sent = Ett annat verifieringsmeddelande kan inte skickas så här snabbt. Försök igen senare.
+user-add-unknown-error = Något gick fel när ytterligare en e-postadress skulle läggas till. Försök igen senare.
 error-headline = Fel
 user-verify-token-error = Verifieringstecken är obligatoriskt.
 user-verify-email-report-subject = Ditt rapport för { -product-name }
@@ -710,7 +717,8 @@ ad-unit-6-before-you-complete = Innan du slutför nästa registrering, använd e
 ## The following messages are brands and should be kept entirely in English
 
 -brand-firefox = Firefox
--brand-fx-monitor = Firefox Monitor
+-brand-monitor = Monitor
+-brand-fx-monitor = Mozilla Monitor
 -brand-mozilla = Mozilla
 -brand-premium = Premium
 -brand-monitor-premium = Monitor Premium
@@ -718,16 +726,15 @@ ad-unit-6-before-you-complete = Innan du slutför nästa registrering, använd e
 -brand-github = GitHub
 -brand-mozilla-vpn = Mozilla VPN
 -brand-relay = Firefox Relay
+-brand-mozilla-monitor = Mozilla Monitor
+-brand-monitor-plus = Monitor Plus
 
 ##
 
-# “account” can be localized, “Firefox” must be treated as a brand,
-# and kept in English.
-# Deprecated - to be replaced by -brand-mozilla-account
--brand-fx-account = Firefox-konto
 # “account” can be localized, “Mozilla” must be treated as a brand,
 # and kept in English.
 -brand-mozilla-account = Mozilla-konto
+open-in-new-tab-alt = Öppna länk i ny flik
 
 ## Search Engine Optimization
 
@@ -735,8 +742,10 @@ meta-desc-2 = Ta reda på om du har varit en del av ett dataintrång med { -bran
 
 ## Header
 
+# Deprecated
 brand-fx-monitor = { -brand-fx-monitor }
 sign-in = Logga in
+brand-mozilla-monitor = { -brand-fx-monitor }
 
 ## Site navigation
 
@@ -747,30 +756,53 @@ site-nav-help-link = Hjälp och support
 site-nav-ad-callout = Prova våra andra säkerhetsverktyg:
 brand-relay = { -brand-relay }
 brand-mozilla-vpn = { -brand-mozilla-vpn }
+mobile-menu-label = Huvudmeny
+main-nav-button-collapse-label = Fäll ihop meny
+main-nav-button-collapse-tooltip = Fäll ihop meny
+main-nav-button-expand-label = Expandera meny
+main-nav-button-expand-tooltip = Expandera meny
+main-nav-label = Navigering
+main-nav-link-home-label = Hem
+main-nav-link-dashboard-label = Översikt
+main-nav-link-settings-label = Inställningar
+main-nav-link-faq-label = Vanliga frågor
+main-nav-link-faq-tooltip = Vanliga frågor
 
 ## User menu
 
+# Obsolete
 menu-button-title = Användarmeny
+# Obsolete
 menu-button-alt = Öppna användarmenyn
+# Obsolete
 menu-list-accessible-label = Kontomeny
-# Deprecated
-menu-item-fxa = Hantera ditt { -brand-fx-account }
+# Obsolete
 menu-item-fxa-2 = Hantera ditt { -brand-mozilla-account }
-# Deprecated
-menu-item-fxa-alt = Öppna sidan { -brand-fx-account }
-menu-item-fxa-alt-2 = Öppna sidan { -brand-mozilla-account }
+# Obsolete
 menu-item-settings = Inställningar
-menu-item-settings-alt = Öppna inställningssidan
+# Obsolete
 menu-item-help = Hjälp och support
-menu-item-help-alt = Öppna hjälp- och supportsidan
+# Obsolete
 menu-item-logout = Logga ut
+user-menu-trigger-label = Öppna användarmeny
+user-menu-trigger-tooltip = Profil
+user-menu-manage-fxa-label = Hantera ditt { -brand-mozilla-account }
+user-menu-settings-label = Inställningar
+user-menu-settings-tooltip = Konfigurera { -brand-mozilla-monitor }
+user-menu-help-label = Hjälp och support
+user-menu-help-tooltip = Få hjälp med att använda { -brand-mozilla-monitor }
+user-menu-signout-label = Logga ut
+user-menu-signout-tooltip = Logga ut från { -brand-mozilla-monitor }
 
 ## Footer
 
 mozilla = { -brand-Mozilla }
-terms-and-privacy = Villkor och sekretess
+terms-of-service = Användarvillkor
+privacy-notice = Sekretessmeddelande
 github = { -brand-github }
 footer-nav-all-breaches = Alla intrång
+footer-external-link-faq-label = Vanliga frågor
+footer-external-link-faq-tooltip = Vanliga frågor
 
 ## Error page
 

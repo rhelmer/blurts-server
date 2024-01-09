@@ -3,9 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { v4 as uuidv4 } from 'uuid'
-import initKnex from 'knex'
-import knexConfig from '../knexfile.js'
-import { logger} from '../../app/functions/server/logging';
+import createDbConnection from "../connect.js";
 import { subscribeHash } from '../../utils/hibp.js'
 import { getSha1 } from '../../utils/fxa.js'
 import { getSubscriberByEmail, updateFxAData } from './subscribers.js'
@@ -15,7 +13,8 @@ import {
   UnauthorizedError
 } from '../../utils/error.js'
 import { getMessage } from '../../utils/fluent.js'
-const knex = initKnex(knexConfig)
+
+const knex = createDbConnection();
 
 /**
  * @param {string} token
@@ -31,7 +30,7 @@ async function getEmailByToken (token) {
 /* c8 ignore stop */
 
 /**
- * @param {string} emailAddressId
+ * @param {number} emailAddressId
  */
 // Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
 /* c8 ignore start */
@@ -57,7 +56,7 @@ async function getEmailAddressRecordByEmail (email) {
   }
   if (emailAddresses.length > 1) {
     // TODO: handle multiple emails in separate(?) subscriber accounts?
-    logger.warn('getEmailAddressRecordByEmail', { msg: 'found the same email multiple times' })
+    console.warn('getEmailAddressRecordByEmail', { msg: 'found the same email multiple times' })
   }
   return emailAddresses[0]
 }
@@ -70,6 +69,7 @@ async function getEmailAddressRecordByEmail (email) {
 // Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
 /* c8 ignore start */
 async function addSubscriberUnverifiedEmailHash (user, email) {
+  const lowerCaseEmail = email.toLowerCase()
   const res = await knex.transaction(trx => {
     return trx('email_addresses')
       .forUpdate()
@@ -78,13 +78,13 @@ async function addSubscriberUnverifiedEmailHash (user, email) {
       })
       .insert({
         subscriber_id: user.id,
-        email,
-        sha1: getSha1(email),
+        email: lowerCaseEmail,
+        sha1: getSha1(lowerCaseEmail),
         verification_token: uuidv4(),
         verified: false
       }).returning('*')
   })
-  return await res[0]
+  return res[0]
 }
 /* c8 ignore stop */
 
@@ -171,7 +171,7 @@ async function _getSha1EntryAndDo (sha1, aFoundCallback, aNotFoundCallback) {
 // Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
 /* c8 ignore start */
 async function _addEmailHash (sha1, email, signupLanguage, verified = false) {
-  logger.debug('_addEmailHash', { sha1, email, signupLanguage, verified })
+  console.debug('_addEmailHash', { sha1, email, signupLanguage, verified })
   try {
     return await _getSha1EntryAndDo(sha1, async (/** @type {any} */ aEntry) => {
       // Entry existed, patch the email value if supplied.
@@ -201,7 +201,7 @@ async function _addEmailHash (sha1, email, signupLanguage, verified = false) {
     })
   } catch (e) {
     // @ts-ignore Log whatever, we don't care
-    logger.error(e)
+    console.error(e)
     throw new InternalServerError(getMessage('error-could-not-add-email'))
   }
 }
@@ -223,7 +223,8 @@ async function _addEmailHash (sha1, email, signupLanguage, verified = false) {
 // Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
 /* c8 ignore start */
 async function addSubscriber (email, signupLanguage, fxaAccessToken = null, fxaRefreshToken = null, fxaProfileData = null) {
-  const emailHash = await _addEmailHash(getSha1(email), email, signupLanguage, true)
+  const lowerCaseEmail = email.toLowerCase()
+  const emailHash = await _addEmailHash(getSha1(lowerCaseEmail), lowerCaseEmail, signupLanguage, true)
   const verified = await _verifySubscriber(emailHash)
   const verifiedSubscriber = Array.isArray(verified) ? verified[0] : null
   if (fxaRefreshToken || fxaProfileData) {
@@ -321,7 +322,7 @@ async function removeEmail (email) {
   if (!subscriber) {
     const emailAddress = await getEmailAddressRecordByEmail(email)
     if (!emailAddress) {
-      logger.warn('removed-subscriber-not-found')
+      console.warn('removed-subscriber-not-found')
       return
     }
     await knex('email_addresses')
@@ -345,7 +346,7 @@ async function removeEmail (email) {
 /* c8 ignore stop */
 
 /**
- * @param {string} emailId
+ * @param {number} emailId
  */
 // Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
 /* c8 ignore start */
