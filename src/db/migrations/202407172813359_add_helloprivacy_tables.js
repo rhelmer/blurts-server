@@ -6,7 +6,6 @@ export async function up(knex) {
   await knex.schema
     .createTable("helloprivacy_profiles", table => {
       table.increments("id").primary();
-      table.integer("monitor_subscriber_id").references("subscribers.id").notNullable();
       table.string("customer_id").unique().notNullable();
       table.string("birth_year").notNullable();
       table.string("birth_month").notNullable();
@@ -33,7 +32,7 @@ export async function up(knex) {
       table.string("scan_id").unique().notNullable();
       table.string("status").notNullable();
       table.string("customer_id").unique().references("helloprivacy_profiles.customer_id").notNullable();
-      table.string("enrollment_id").notNullable();
+      table.string("enrollment_id").nullable();
       table.string("scan_type").notNullable();
       table.integer("broker_count").notNullable();
       table.jsonb("broker_ids").notNullable();
@@ -53,7 +52,7 @@ export async function up(knex) {
       table.string("broker_id").notNullable();
       table.string("customer_id").notNullable();
       table.integer("score").notNullable();
-      table.integer("age").notNullable();
+      table.integer("age").nullable();
       table.jsonb("addresses").notNullable();
       table.string("full_name").notNullable();
       table.jsonb("relatives").nullable();

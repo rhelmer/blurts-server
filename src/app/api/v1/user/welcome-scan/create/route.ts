@@ -12,7 +12,10 @@ import {
   createScan,
   isEligibleForFreeScan,
 } from "../../../../../functions/server/onerep";
-import { createScan as createHelloPrivacyScan } from "../../../../../functions/server/helloprivacy";
+import {
+  createScan as createHelloPrivacyScan,
+  isEligibleForFreeScan as isEligibleForHelloPrivacyFreeScan,
+} from "../../../../../functions/server/helloprivacy";
 import type { CreateProfileRequest } from "../../../../../functions/server/onerep";
 import { meetsAgeRequirement } from "../../../../../functions/universal/user";
 import AppConstants from "../../../../../../appConstants";
@@ -29,10 +32,11 @@ import { getExperimentationId } from "../../../../../functions/server/getExperim
 import { getExperiments } from "../../../../../functions/server/getExperiments";
 import { getLocale } from "../../../../../functions/universal/getLocale";
 import { getL10n } from "../../../../../functions/l10n/serverComponents";
-import { getFeatureFlagByName } from "../../../../../../db/tables/featureFlags";
+import { getEnabledFeatureFlags } from "../../../../../../db/tables/featureFlags";
 import {
   getProfile,
   getProfileBySubscriberId,
+  setHelloPrivacyCustomerId,
   setHelloPrivacyProfileDetails,
 } from "../../../../../../db/tables/helloprivacy_profiles";
 import { randomUUID } from "crypto";
@@ -62,10 +66,23 @@ export async function POST(
     throw new Error("No fxa_uid found in session");
   }
 
-  const eligible = await isEligibleForFreeScan(
-    session.user,
-    getCountryCode(headers()),
-  );
+  const enabledFlags = await getEnabledFeatureFlags({
+    email: session.user.email,
+    ignoreAllowlist: false,
+  });
+
+  let eligible = false;
+  if (enabledFlags.includes("HelloPrivacy")) {
+    eligible = await isEligibleForHelloPrivacyFreeScan(
+      session.user,
+      getCountryCode(headers()),
+    );
+  } else {
+    eligible = await isEligibleForFreeScan(
+      session.user,
+      getCountryCode(headers()),
+    );
+  }
   if (!eligible) {
     throw new Error("User is not eligible for feature");
   }
@@ -128,19 +145,37 @@ export async function POST(
         throw new Error("No subscriber found for current session.");
       }
 
-      if (await getFeatureFlagByName("helloprivacy")) {
+      if (enabledFlags.includes("HelloPrivacy")) {
         const profile = await getProfileBySubscriberId(
           subscriber.id.toString(),
         );
         if (!profile) {
           // Create HelloPrivacy profile
-          const profileId = randomUUID();
-          await setHelloPrivacyProfileDetails(profileId, profileData);
+          const customerId = randomUUID();
+          await setHelloPrivacyProfileDetails(
+            subscriber.id,
+            customerId,
+            profileData,
+          );
+          await setHelloPrivacyCustomerId(subscriber, customerId);
 
           // Start exposure scan
-          const scan = await createHelloPrivacyScan(profileId, profileData);
-          const scanId = scan.id;
-          await setHelloPrivacyScan(profileId, scanId, scan.status);
+          const helloPrivacyProfile = {
+            birthYear: new Date(profileData.birth_date!).getFullYear(),
+            birthMonth: new Date(profileData.birth_date!).getMonth(),
+            name: {
+              first: profileData.first_name,
+              middle: profileData.middle_name,
+              last: profileData.last_name,
+              suffix: profileData.name_suffix,
+            },
+            addresses: profileData.addresses,
+          };
+          const scan = await createHelloPrivacyScan(
+            customerId,
+            helloPrivacyProfile,
+          );
+          await setHelloPrivacyScan(customerId, scan);
         }
       } else {
         if (!subscriber.onerep_profile_id) {
@@ -166,7 +201,14 @@ export async function POST(
 
       return NextResponse.json({ success: true }, { status: 200 });
     } catch (e) {
-      logger.error(e);
+      if (e instanceof Error) {
+        logger.error("create_scan_failed", {
+          stack: e.stack,
+          message: e.message,
+        });
+      } else {
+        logger.error("create_scan_failed", e);
+      }
       return NextResponse.json({ success: false }, { status: 500 });
     }
   } else {

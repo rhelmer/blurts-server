@@ -13,9 +13,9 @@ import { logger } from "./logging";
 
 export type Profile = {
   // Year of birth, in YYYY format.
-  birthYear?: string;
+  birthYear: number;
   // Month of birth, between 1 and 12
-  birthMonth?: string;
+  birthMonth?: number;
   name?: {
     // Honorific prefixes or titles such as Hon, Dr, Mrs, Sir, etc
     prefix?: string;
@@ -266,6 +266,12 @@ export async function isEligibleForFreeScan(
   }
 
   const profileId = await getHelloPrivacyProfileId(user.subscriber.id);
+
+  if (!profileId) {
+    return true;
+  }
+
+  // TODO implement
   const scanResult = await getLatestScanResults(profileId);
 
   if (scanResult.scan) {
@@ -312,11 +318,14 @@ async function internalFetch(
   const response = await fetch(url, { ...options, headers });
 
   if (!response.ok) {
-    logger.error(
-      `Failed calling HelloPrivacy API: [${response.status}] [${response.statusText}]`,
-    );
+    const json = await response.json();
+    logger.error(`Failed calling HelloPrivacy API`, {
+      status: response.status,
+      statusText: response.statusText,
+      json,
+    });
     throw new Error(
-      `Failed calling HelloPrivacy API: [${response.status}] [${response.statusText}]`,
+      `Failed calling HelloPrivacy API: [${response.status}] [${response.statusText}] [${JSON.stringify(json)}]`,
     );
   }
   return response.json() as unknown as JSON;

@@ -10,6 +10,7 @@ import { getServerSession } from "../../../../../functions/server/getServerSessi
 import AppConstants from "../../../../../../appConstants";
 import {
   getOnerepProfileId,
+  getHelloPrivacyCustomerId,
   getSubscriberByFxaUid,
 } from "../../../../../../db/tables/subscribers";
 
@@ -23,6 +24,17 @@ import {
   getScanDetails,
   getAllScanResults,
 } from "../../../../../functions/server/onerep";
+import { getEnabledFeatureFlags } from "../../../../../../db/tables/featureFlags";
+import {
+  getScan,
+  getScanRecords,
+} from "../../../../../functions/server/helloprivacy";
+import {
+  addHelloPrivacyScanResults,
+  addScanResults,
+  getAllScansForProfile,
+  getLatestScan,
+} from "../../../../../../db/tables/helloprivacy_scans";
 
 export interface ScanProgressBody {
   success: boolean;
@@ -45,32 +57,69 @@ export async function GET(
       if (!subscriber) {
         throw new Error("No subscriber found for current session.");
       }
-      const profileId = await getOnerepProfileId(subscriber.id);
 
-      const latestScan = await getLatestOnerepScanResults(profileId);
-      const latestScanId = latestScan.scan?.onerep_scan_id;
+      const enabledFlags = await getEnabledFeatureFlags({
+        email: session.user.email,
+        ignoreAllowlist: false,
+      });
 
-      if (
-        typeof latestScanId !== "undefined" &&
-        typeof profileId === "number"
-      ) {
-        const scan = await getScanDetails(profileId, latestScanId);
+      if (enabledFlags.includes("HelloPrivacy")) {
+        const customerId = await getHelloPrivacyCustomerId(subscriber.id);
 
-        // Store scan results.
-        if (scan.status === "finished") {
-          const allScanResults = await getAllScanResults(profileId);
-          await addOnerepScanResults(profileId, allScanResults);
+        const latestScan = await getLatestScan(customerId);
+        const latestScanId = latestScan?.scan_id;
+
+        if (
+          typeof latestScanId !== "undefined" &&
+          typeof customerId === "string"
+        ) {
+          const scan = await getScan(latestScanId);
+
+          if (scan.status === "done") {
+            const allScanResults = await getScanRecords(scan.id);
+            await addHelloPrivacyScanResults(customerId, allScanResults);
+          }
+
+          return NextResponse.json(
+            { success: true, status: scan.status },
+            { status: 200 },
+          );
         }
+      } else {
+        const profileId = await getOnerepProfileId(subscriber.id);
 
-        return NextResponse.json(
-          { success: true, status: scan.status },
-          { status: 200 },
-        );
+        const latestScan = await getLatestOnerepScanResults(profileId);
+        const latestScanId = latestScan.scan?.onerep_scan_id;
+
+        if (
+          typeof latestScanId !== "undefined" &&
+          typeof profileId === "number"
+        ) {
+          const scan = await getScanDetails(profileId, latestScanId);
+
+          // Store scan results.
+          if (scan.status === "finished") {
+            const allScanResults = await getAllScanResults(profileId);
+            await addOnerepScanResults(profileId, allScanResults);
+          }
+
+          return NextResponse.json(
+            { success: true, status: scan.status },
+            { status: 200 },
+          );
+        }
       }
 
       return NextResponse.json({ success: true }, { status: 200 });
     } catch (e) {
-      logger.error(e);
+      if (e instanceof Error) {
+        logger.error("failed_checking_scan_progress", {
+          stack: e.stack,
+          message: e.message,
+        });
+      } else {
+        logger.error("failed_checking_scan_progress", { e });
+      }
       return NextResponse.json({ success: false }, { status: 500 });
     }
   } else {

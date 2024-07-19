@@ -50,7 +50,8 @@ export type FeatureFlagName =
   | "AutomaticRemovalCsatSurvey"
   | "HowItWorksPage"
   | "AdditionalRemovalStatuses"
-  | "PetitionBannerCsatSurvey";
+  | "PetitionBannerCsatSurvey"
+  | "HelloPrivacy";
 
 /**
  * @param options

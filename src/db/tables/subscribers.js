@@ -507,6 +507,18 @@ async function getOnerepProfileId (subscriberId) {
 }
 /* c8 ignore stop */
 
+/**
+ * @param {number} subscriberId
+ */
+// Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
+/* c8 ignore start */
+async function getHelloPrivacyCustomerId (subscriberId) {
+  const res = await knex('subscribers')
+    .select('helloprivacy_customer_id')
+    .where('id', subscriberId)
+  return res?.[0]?.["helloprivacy_customer_id"] ?? null
+}
+/* c8 ignore stop */
 
 /**
  * @deprecated OBSOLETE: Delete as a part of MNTOR-3077
@@ -643,5 +655,6 @@ export {
   deleteOnerepProfileId,
   incrementSignInCountForEligibleFreeUser,
   getSignInCount,
+  getHelloPrivacyCustomerId,
   knex as knexSubscribers
 }
