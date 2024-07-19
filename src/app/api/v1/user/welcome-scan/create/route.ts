@@ -12,6 +12,7 @@ import {
   createScan,
   isEligibleForFreeScan,
 } from "../../../../../functions/server/onerep";
+import { createScan as createHelloPrivacyScan } from "../../../../../functions/server/helloprivacy";
 import type { CreateProfileRequest } from "../../../../../functions/server/onerep";
 import { meetsAgeRequirement } from "../../../../../functions/universal/user";
 import AppConstants from "../../../../../../appConstants";
@@ -28,6 +29,14 @@ import { getExperimentationId } from "../../../../../functions/server/getExperim
 import { getExperiments } from "../../../../../functions/server/getExperiments";
 import { getLocale } from "../../../../../functions/universal/getLocale";
 import { getL10n } from "../../../../../functions/l10n/serverComponents";
+import { getFeatureFlagByName } from "../../../../../../db/tables/featureFlags";
+import {
+  getProfile,
+  getProfileBySubscriberId,
+  setHelloPrivacyProfileDetails,
+} from "../../../../../../db/tables/helloprivacy_profiles";
+import { randomUUID } from "crypto";
+import { setHelloPrivacyScan } from "../../../../../../db/tables/helloprivacy_scans";
 
 export interface WelcomeScanBody {
   success: boolean;
@@ -118,24 +127,41 @@ export async function POST(
       if (!subscriber) {
         throw new Error("No subscriber found for current session.");
       }
-      if (!subscriber.onerep_profile_id) {
-        // Create OneRep profile
-        const profileId = await createProfile(profileData);
-        await setOnerepProfileId(subscriber, profileId);
-        await setProfileDetails(profileId, profileData);
 
-        // Start exposure scan
-        const scan = await createScan(profileId);
-        const scanId = scan.id;
-        await setOnerepScan(profileId, scanId, scan.status, "manual");
-        // TODO MNTOR-2686 - refactor onerep.ts and centralize logging.
-        logger.info("scan_created", {
-          onerepScanId: scanId,
-          onerepScanStatus: scan.status,
-          onerepScanReason: "manual",
-        });
+      if (await getFeatureFlagByName("helloprivacy")) {
+        const profile = await getProfileBySubscriberId(
+          subscriber.id.toString(),
+        );
+        if (!profile) {
+          // Create HelloPrivacy profile
+          const profileId = randomUUID();
+          await setHelloPrivacyProfileDetails(profileId, profileData);
 
-        return NextResponse.json({ success: true }, { status: 200 });
+          // Start exposure scan
+          const scan = await createHelloPrivacyScan(profileId, profileData);
+          const scanId = scan.id;
+          await setHelloPrivacyScan(profileId, scanId, scan.status);
+        }
+      } else {
+        if (!subscriber.onerep_profile_id) {
+          // Create OneRep profile
+          const profileId = await createProfile(profileData);
+          await setOnerepProfileId(subscriber, profileId);
+          await setProfileDetails(profileId, profileData);
+
+          // Start exposure scan
+          const scan = await createScan(profileId);
+          const scanId = scan.id;
+          await setOnerepScan(profileId, scanId, scan.status, "manual");
+          // TODO MNTOR-2686 - refactor onerep.ts and centralize logging.
+          logger.info("scan_created", {
+            onerepScanId: scanId,
+            onerepScanStatus: scan.status,
+            onerepScanReason: "manual",
+          });
+
+          return NextResponse.json({ success: true }, { status: 200 });
+        }
       }
 
       return NextResponse.json({ success: true }, { status: 200 });

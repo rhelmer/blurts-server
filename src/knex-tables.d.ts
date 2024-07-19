@@ -455,3 +455,63 @@ declare module "knex/types/tables" {
     >;
   }
 }
+interface HelloPrivacyProfileRow {
+  id: number;
+  monitor_subscriber_id: string;
+  customer_id: string;
+  name_prefix: null | string;
+  first_name: string;
+  middle_name: null | string;
+  last_name: string;
+  name_suffix: null | string;
+  city_name: string;
+  state_code: StateAbbr;
+  date_of_birth: Date;
+  email_addresses: JSON;
+  addresses: JSON;
+  phone_numbers: JSON;
+  other_names: JSON;
+  created_at: Date;
+  updated_at: Date;
+}
+interface HelloPrivacyScanRow {
+  id: number;
+  scan_id: string;
+  status: string;
+  customer_id: string;
+  enrollment_id: string;
+  scan_type: string;
+  broker_count: number;
+  broker_ids: string[];
+  realtime: boolean;
+  created_at: ISO8601DateString;
+  modified_at: ISO8601DateString;
+  started_at: ISO8601DateString;
+  stopped_at: ISO8601DateString;
+}
+
+interface HelloPrivacyScanRecordRow {
+  id: number;
+  scan_record_id: string;
+  scan_id: string;
+  broker_id: string;
+  customer_id: string;
+  score: number;
+  age: number;
+  addresses: string[];
+  full_name: string;
+  relatives: string[];
+  email_addresses: string[];
+  phone_numbers: string[];
+  education: string;
+  employment: string[];
+  gender: string;
+  occupation: string[];
+  property: string[];
+  recordUrl: string;
+  created_at: ISO8601DateString;
+  submitted_at: ISO8601DateString;
+  confirmed_at: ISO8601DateString;
+  verified_at: ISO8601DateString;
+  modified_at: ISO8601DateString;
+}
