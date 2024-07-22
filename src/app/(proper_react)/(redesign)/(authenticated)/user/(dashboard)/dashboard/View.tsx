@@ -325,7 +325,7 @@ export const View = (props: Props) => {
     return (
       <>
         <h2 className={styles.exposuresAreaHeadline}>
-          {l10n.getString("dashboard-exposures-area-headline")} test
+          {l10n.getString("dashboard-exposures-area-headline")}
         </h2>
         {exposuresAreaDescription && (
           <p className={styles.exposuresAreaDescription}>
