@@ -46,6 +46,10 @@ export const SubscriberBreachCard = (props: SubscriberBreachCardProps) => {
   });
   const exposureCategoriesArray: React.ReactElement[] = [];
 
+  // FIXME
+  if (subscriberBreach.dataClassesEffected === undefined) {
+    return;
+  }
   subscriberBreach.dataClassesEffected.map((item: DataClassEffected) => {
     const dataClass = Object.keys(item)[0];
 

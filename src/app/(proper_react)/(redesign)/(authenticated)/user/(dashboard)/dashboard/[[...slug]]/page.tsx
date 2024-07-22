@@ -18,6 +18,7 @@ import {
   getScansCountForProfile,
 } from "../../../../../../../../db/tables/onerep_scans";
 import {
+  getHelloPrivacyCustomerId,
   getOnerepProfileId,
   getSignInCount,
 } from "../../../../../../../../db/tables/subscribers";
@@ -32,7 +33,10 @@ import {
   getSubscriptionBillingAmount,
   getPremiumSubscriptionUrl,
 } from "../../../../../../../functions/server/getPremiumSubscriptionInfo";
-import { refreshStoredScanResults } from "../../../../../../../functions/server/refreshStoredScanResults";
+import {
+  refreshStoredScanRecords,
+  refreshStoredScanResults,
+} from "../../../../../../../functions/server/refreshStoredScanResults";
 import { getEnabledFeatureFlags } from "../../../../../../../../db/tables/featureFlags";
 import { getAttributionsFromCookiesOrDb } from "../../../../../../../functions/server/attributions";
 import { checkSession } from "../../../../../../../functions/server/checkSession";
@@ -42,6 +46,8 @@ import { getElapsedTimeInDaysSinceInitialScan } from "../../../../../../../funct
 import { getExperiments } from "../../../../../../../functions/server/getExperiments";
 import { getLocale } from "../../../../../../../functions/universal/getLocale";
 import { getL10n } from "../../../../../../../functions/l10n/serverComponents";
+import { getLatestScanRecords } from "../../../../../../../../db/tables/helloprivacy_scans";
+import { isEligibleForFreeScan as isEligibleForHelloPrivacyFreeScan } from "../../../../../../../functions/server/helloprivacy";
 
 const dashboardTabSlugs = ["action-needed", "fixed"];
 
@@ -75,49 +81,92 @@ export default async function DashboardPage({ params, searchParams }: Props) {
   const headersList = headers();
   const countryCode = getCountryCode(headersList);
 
-  const profileId = await getOnerepProfileId(session.user.subscriber.id);
-  const hasRunScan = typeof profileId === "number";
+  const enabledFeatureFlags = await getEnabledFeatureFlags({
+    email: session.user.email,
+  });
+
   const isNewUser = !isPrePlusUser(session.user);
 
-  if (hasRunScan) {
-    await refreshStoredScanResults(profileId);
+  let latestScan;
+  let scanCount;
+  let hasFirstMonitoringScan;
+  let userIsEligibleForFreeScan;
+  let userIsEligibleForPremium;
 
-    // If the current user is a subscriber and their OneRep profile is not
-    // activated: Most likely we were not able or failed to kick-off the
-    // auto-removal process.
-    // Let’s make sure the users OneRep profile is activated:
-    if (isPremiumUser) {
-      await activateAndOptoutProfile({ profileId });
+  if (enabledFeatureFlags.includes("HelloPrivacy")) {
+    const customerId = await getHelloPrivacyCustomerId(
+      session.user.subscriber.id,
+    );
+    const hasRunScan = typeof customerId === "string";
+
+    if (hasRunScan) {
+      // TODO refresh
+    } else if (canSubscribeToPremium({ user: session.user, countryCode })) {
+      return redirect("/user/welcome");
     }
-  } else if (
-    isPremiumUser ||
-    (isNewUser &&
-      canSubscribeToPremium({
-        user: session.user,
-        countryCode,
-      }))
-  ) {
-    return redirect("/user/welcome");
+
+    latestScan = await getLatestScanRecords(customerId);
+
+    userIsEligibleForFreeScan = await isEligibleForHelloPrivacyFreeScan(
+      session.user,
+      countryCode,
+    );
+
+    userIsEligibleForPremium = isEligibleForPremium(countryCode);
+
+    scanCount = 1; // FIXME
+    hasFirstMonitoringScan = false; //FIXME
+
+    await refreshStoredScanRecords(customerId);
+  } else {
+    const profileId = await getOnerepProfileId(session.user.subscriber.id);
+    const hasRunScan = typeof profileId === "number";
+    if (hasRunScan) {
+      await refreshStoredScanResults(profileId);
+
+      // If the current user is a subscriber and their OneRep profile is not
+      // activated: Most likely we were not able or failed to kick-off the
+      // auto-removal process.
+      // Let’s make sure the users OneRep profile is activated:
+      if (isPremiumUser) {
+        await activateAndOptoutProfile({ profileId });
+      }
+    } else if (
+      isPremiumUser ||
+      (isNewUser &&
+        canSubscribeToPremium({
+          user: session.user,
+          countryCode,
+        }))
+    ) {
+      return redirect("/user/welcome");
+    }
+
+    latestScan = await getLatestOnerepScanResults(profileId);
+    scanCount =
+      typeof profileId === "number"
+        ? await getScansCountForProfile(profileId)
+        : 0;
+
+    hasFirstMonitoringScan = profileId
+      ? typeof (await getLatestScanForProfileByReason(
+          profileId,
+          "monitoring",
+        )) !== "undefined"
+      : false;
+
+    userIsEligibleForFreeScan = await isEligibleForFreeScan(
+      session.user,
+      countryCode,
+    );
+
+    userIsEligibleForPremium = isEligibleForPremium(countryCode);
   }
 
-  const latestScan = await getLatestOnerepScanResults(profileId);
-  const scanCount =
-    typeof profileId === "number"
-      ? await getScansCountForProfile(profileId)
-      : 0;
   const subBreaches = await getSubscriberBreaches({
     fxaUid: session.user.subscriber.fxa_uid,
     countryCode,
   });
-
-  const userIsEligibleForFreeScan = await isEligibleForFreeScan(
-    session.user,
-    countryCode,
-  );
-  const enabledFeatureFlags = await getEnabledFeatureFlags({
-    email: session.user.email,
-  });
-  const userIsEligibleForPremium = isEligibleForPremium(countryCode);
 
   const experimentationId = getExperimentationId(session.user);
   const experimentData = await getExperiments({
@@ -137,12 +186,6 @@ export default async function DashboardPage({ params, searchParams }: Props) {
   const elapsedTimeInDaysSinceInitialScan =
     await getElapsedTimeInDaysSinceInitialScan(session.user);
 
-  const hasFirstMonitoringScan = profileId
-    ? typeof (await getLatestScanForProfileByReason(
-        profileId,
-        "monitoring",
-      )) !== "undefined"
-    : false;
   const signInCount = await getSignInCount(session.user.subscriber.id);
 
   return (

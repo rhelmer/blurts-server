@@ -11,12 +11,20 @@ import { SubscriberBreach } from "../../../../utils/subscriberBreaches";
 import { ScanResultCard } from "./ScanResultCard";
 import { SubscriberBreachCard } from "./SubscriberBreachCard";
 import { FeatureFlagName } from "../../../../db/tables/featureFlags";
+import { HelloPrivacyScanRecordRow } from "../../../../knex-tables";
 
-export type Exposure = OnerepScanResultRow | SubscriberBreach;
+export type Exposure =
+  | (OnerepScanResultRow & HelloPrivacyScanRecordRow)
+  | SubscriberBreach;
 
 // Typeguard function
-export function isScanResult(obj: Exposure): obj is OnerepScanResultRow {
-  return (obj as OnerepScanResultRow).data_broker !== undefined; // only ScanResult has an instance of data_broker
+export function isScanResult(
+  obj: Exposure,
+): obj is OnerepScanResultRow & HelloPrivacyScanRecordRow {
+  return (
+    (obj as OnerepScanResultRow).data_broker !== undefined ||
+    (obj as HelloPrivacyScanRecordRow).broker_id !== undefined
+  ); // only ScanResult has an instance of data_broker
 }
 
 export type ExposureCardProps = {

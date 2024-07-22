@@ -134,6 +134,7 @@ declare module "knex/types/tables" {
     sign_in_count: null | number;
     email_addresses: SubscriberEmail[];
     first_broker_removal_email_sent: boolean;
+    helloprivacy_customer_id: string;
   }
   type SubscriberOptionalColumns = Extract<
     keyof SubscriberRow,
@@ -509,9 +510,50 @@ interface HelloPrivacyScanRecordRow {
   occupation: string[];
   property: string[];
   recordUrl: string;
+  icon: string;
+  name: string;
+  estimated_days_to_remove_records: string;
   created_at: ISO8601DateString;
   submitted_at: ISO8601DateString;
   confirmed_at: ISO8601DateString;
   verified_at: ISO8601DateString;
   modified_at: ISO8601DateString;
+}
+
+interface HelloPrivacyBrokerRow {
+  id: string;
+  broker_id: string;
+  name: string;
+  url: string;
+  enabled: boolean;
+  icon: string;
+  info_types: string[];
+  estimated_days_to_remove_records: number;
+  broker_type: string;
+  capabilities: string[];
+  removal_instructions: string[];
+  additionalProfileRequiredFields: string[];
+  active_at: ISO8601DateString;
+  removed_at: ISO8601DateString;
+}
+
+interface HelloPrivacyProfileRow {
+  id: string;
+  customer_id: string;
+  birth_year: string;
+  birth_month: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  name_suffix: string;
+  name_prefix: string;
+  city_name: string;
+  state_code: string;
+  date_of_birth: ISO8601DateString;
+  other_names: string[];
+  addresses: string[];
+  email_addresses: string[];
+  phone_numbers: string[];
+  create_at: ISO8601DateString;
+  updated_at: ISO8601DateString;
 }

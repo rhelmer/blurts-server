@@ -71,6 +71,28 @@ export async function up(knex) {
       table.timestamp("modified_at");
       table.index("scan_record_id");
     });
+
+    await knex.schema
+    .createTable("helloprivacy_brokers", table => {
+      table.increments("id").primary();
+      table.string("broker_id").notNullable();
+      table.string("name").notNullable();
+      table.string("url").nullable();
+      table.boolean("enabled").nullable();
+      table.text("icon").nullable();
+      table.jsonb("info_types").nullable();
+      table.integer("estimated_days_to_remove_records").nullable();
+      table.string("broker_type").nullable();
+      table.jsonb("capabilities").nullable();
+      table.text("removal_instructions").nullable();
+      table.jsonb("additional_profile_required_fields").nullable();
+      table.timestamp("active_at");
+      table.timestamp("removed_at");
+    });
+
+    await knex.schema.table('subscribers', (table) => {
+      table.string('helloprivacy_customer_id').references("helloprivacy_profiles.customer_id");
+    })
 }
 
 /**
@@ -81,4 +103,8 @@ export async function down(knex) {
   knex.schema.dropTable("helloprivacy_profiles");
   knex.schema.dropTable("helloprivacy_scans");
   knex.schema.dropTable("helloprivacy_scan_records");
+  knex.schema.dropTable("helloprivacy_brokers");
+  knex.schema.alterTable("subscriptions", (table) => {
+    table.dropColumn("helloprivacy_customer_id");
+  })
 }

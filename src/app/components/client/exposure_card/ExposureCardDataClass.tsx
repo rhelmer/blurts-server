@@ -40,8 +40,8 @@ const PremiumDataClassDetails = (props: PremiumDataClassDetailsProps) => {
     );
   }
   if (
-    dataBrokerDataType === "emails" ||
-    dataBrokerDataType === "phones" ||
+    dataBrokerDataType === "email_addresses" ||
+    dataBrokerDataType === "phone_numbers" ||
     dataBrokerDataType === "relatives"
   ) {
     return exposure[dataBrokerDataType].map((item: string, index: number) => (

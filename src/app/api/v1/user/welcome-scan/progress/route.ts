@@ -31,8 +31,6 @@ import {
 } from "../../../../../functions/server/helloprivacy";
 import {
   addHelloPrivacyScanResults,
-  addScanResults,
-  getAllScansForProfile,
   getLatestScan,
 } from "../../../../../../db/tables/helloprivacy_scans";
 
@@ -75,7 +73,7 @@ export async function GET(
         ) {
           const scan = await getScan(latestScanId);
 
-          if (scan.status === "done") {
+          if (scan.status === "active" || scan.status === "done") {
             const allScanResults = await getScanRecords(scan.id);
             await addHelloPrivacyScanResults(customerId, allScanResults);
           }

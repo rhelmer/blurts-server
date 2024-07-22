@@ -8,7 +8,7 @@
  */
 export function up (knex) {
   return knex.schema.table('subscribers', (table) => {
-    table.string('helloprivacy_customer_id').nullable().references("helloprivacy_profiles.monitor_subscriber_id").notNullable();
+    table.string('helloprivacy_customer_id').nullable().references("helloprivacy_profiles.customerid").notNullable();
 
   })
 }

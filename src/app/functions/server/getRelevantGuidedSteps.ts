@@ -6,11 +6,12 @@ import { Session } from "next-auth";
 import { LatestOnerepScanData } from "../../../db/tables/onerep_scans";
 import { SubscriberBreach } from "../../../utils/subscriberBreaches";
 import { BreachDataTypes, HighRiskDataTypes } from "../universal/breach";
+import { LatestHelloPrivacyScanData } from "../../../db/tables/helloprivacy_scans";
 
 export type StepDeterminationData = {
   user: Session["user"];
   countryCode: string;
-  latestScanData: LatestOnerepScanData | null;
+  latestScanData: (LatestOnerepScanData & LatestHelloPrivacyScanData) | null;
   subscriberBreaches: SubscriberBreach[];
 };
 
@@ -225,13 +226,25 @@ export function hasCompletedStep(
     const hasRunScan =
       typeof data.latestScanData?.scan === "object" &&
       data.latestScanData?.scan !== null;
+    // let hasResolvedAllScanResults;
+    // if (enabledFlags.includes("HelloPrivacy")) {
     const hasResolvedAllScanResults =
-      (data.latestScanData?.scan?.onerep_scan_status === "finished" ||
+      (data.latestScanData?.scan?.status === "done" ||
         data.latestScanData?.scan?.onerep_scan_status === "in_progress") &&
       data.latestScanData.results.every(
         (scanResult) =>
           scanResult.manually_resolved || scanResult.status !== "new",
       );
+
+    /*} else {
+      hasResolvedAllScanResults =
+        (data.latestScanData?.scan?.onerep_scan_status === "finished" ||
+          data.latestScanData?.scan?.onerep_scan_status === "in_progress") &&
+        data.latestScanData.results.every(
+          (scanResult) =>
+            scanResult.manually_resolved || scanResult.status !== "new",
+        );
+    }*/
     return hasRunScan && hasResolvedAllScanResults;
   }
 

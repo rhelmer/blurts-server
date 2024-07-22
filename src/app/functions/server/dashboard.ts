@@ -210,22 +210,22 @@ export function getDashboardSummary(
       }
       // total data points: add email, phones, addresses, relatives, full name (1)
       const dataPointsIncrement =
-        r.emails.length +
-        r.phones.length +
+        r.email_addresses.length +
+        r.phone_numbers.length +
         r.addresses.length +
         r.relatives.length;
       summary.totalDataPointsNum += dataPointsIncrement;
       summary.dataBrokerTotalDataPointsNum += dataPointsIncrement;
 
       // for all data points: email, phones, addresses, relatives, full name (1)
-      summary.allDataPoints.emailAddresses += r.emails.length;
-      summary.allDataPoints.phoneNumbers += r.phones.length;
+      summary.allDataPoints.emailAddresses += r.email_addresses.length;
+      summary.allDataPoints.phoneNumbers += r.phone_numbers.length;
       summary.allDataPoints.addresses += r.addresses.length;
       summary.allDataPoints.familyMembers += r.relatives.length;
 
       if (isInProgress) {
-        summary.inProgressDataPoints.emailAddresses += r.emails.length;
-        summary.inProgressDataPoints.phoneNumbers += r.phones.length;
+        summary.inProgressDataPoints.emailAddresses += r.email_addresses.length;
+        summary.inProgressDataPoints.phoneNumbers += r.phone_numbers.length;
         summary.inProgressDataPoints.addresses += r.addresses.length;
         summary.inProgressDataPoints.familyMembers += r.relatives.length;
         summary.dataBrokerInProgressDataPointsNum += dataPointsIncrement;
@@ -233,8 +233,8 @@ export function getDashboardSummary(
 
       // for fixed data points: email, phones, addresses, relatives, full name (1)
       if (isAutoFixed) {
-        summary.fixedDataPoints.emailAddresses += r.emails.length;
-        summary.fixedDataPoints.phoneNumbers += r.phones.length;
+        summary.fixedDataPoints.emailAddresses += r.email_addresses.length;
+        summary.fixedDataPoints.phoneNumbers += r.phone_numbers.length;
         summary.fixedDataPoints.addresses += r.addresses.length;
         summary.fixedDataPoints.familyMembers += r.relatives.length;
         summary.dataBrokerAutoFixedDataPointsNum += dataPointsIncrement;

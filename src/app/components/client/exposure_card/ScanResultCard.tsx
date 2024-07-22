@@ -20,9 +20,10 @@ import { ExposureCardDataClassLayout } from "./ExposureCardDataClass";
 import { DataBrokerImage } from "./DataBrokerImage";
 import { TelemetryLink } from "../TelemetryLink";
 import { FeatureFlagName } from "../../../../db/tables/featureFlags";
+import { HelloPrivacyScanRecordRow } from "../../../../knex-tables";
 
 export type ScanResultCardProps = {
-  scanResult: OnerepScanResultRow;
+  scanResult: OnerepScanResultRow & HelloPrivacyScanRecordRow;
   locale: string;
   resolutionCta: ReactNode;
   isPremiumUser: boolean;
@@ -56,7 +57,7 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
       />,
     );
   }
-  if (scanResult.phones.length > 0) {
+  if (scanResult.phone_numbers.length > 0) {
     exposureCategoriesArray.push(
       <ExposureCardDataClassLayout
         exposure={scanResult}
@@ -64,12 +65,12 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
         dataBrokerDataType="phones"
         icon={<PhoneIcon alt="" width="13" height="13" />}
         label={l10n.getString("exposure-card-phone-number")}
-        count={scanResult.phones.length}
+        count={scanResult.phone_numbers.length}
         isPremiumUser={props.isPremiumUser}
       />,
     );
   }
-  if (scanResult.emails.length > 0) {
+  if (scanResult.email_addresses.length > 0) {
     exposureCategoriesArray.push(
       <ExposureCardDataClassLayout
         exposure={scanResult}
@@ -77,7 +78,7 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
         dataBrokerDataType="emails"
         icon={<EmailIcon alt="" width="13" height="13" />}
         label={l10n.getString("exposure-card-email")}
-        count={scanResult.emails.length}
+        count={scanResult.email_addresses.length}
         isPremiumUser={props.isPremiumUser}
       />,
     );
@@ -97,11 +98,11 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
   }
   const COMPANY_NAME_MAX_CHARACTER_COUNT = 20;
   const isCompanyNameTooLong =
-    scanResult.data_broker.length > COMPANY_NAME_MAX_CHARACTER_COUNT;
+    scanResult.broker_id.length > COMPANY_NAME_MAX_CHARACTER_COUNT;
 
   const dataBrokerProfileLink = (
     <TelemetryLink
-      href={scanResult.link}
+      href={scanResult.recordUrl}
       target="_blank"
       eventData={{
         link_id: `data_broker_${scanResult.id}`,
@@ -212,7 +213,7 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
       : "";
 
   const exposureCard = (
-    <div aria-label={props.scanResult.data_broker}>
+    <div aria-label={props.scanResult.broker_id}>
       <div className={styles.exposureCard}>
         <div className={styles.exposureHeader}>
           <dl className={styles.exposureHeaderList}>
@@ -222,7 +223,10 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
             <dd
               className={`${styles.hideOnMobile} ${styles.exposureImageWrapper}`}
             >
-              <DataBrokerImage name={scanResult.data_broker} />
+              <DataBrokerImage
+                name={scanResult.broker_id}
+                icon={scanResult.icon}
+              />
             </dd>
             <dt className={styles.visuallyHidden}>
               {l10n.getString("exposure-card-label-company")}
@@ -234,7 +238,7 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
                 }
                 ${isCompanyNameTooLong ? styles.makeFontSmaller : ""}`}
               >
-                {scanResult.data_broker}
+                {scanResult.name}
               </span>
             </dd>
             <dt className={`${styles.hideOnMobile} ${styles.visuallyHidden}`}>
@@ -249,6 +253,11 @@ export const ScanResultCard = (props: ScanResultCardProps) => {
             <dd className={styles.hideOnMobile}>
               {dateFormatter.format(scanResult.created_at)}
             </dd>
+            <dt className={styles.visuallyHidden}>
+              Estimated days to remove
+              {l10n.getString("exposure-card-label-status")}
+            </dt>
+            <dd>{scanResult.estimated_days_to_remove_records}</dd>
             <dt className={styles.visuallyHidden}>
               {l10n.getString("exposure-card-label-status")}
             </dt>

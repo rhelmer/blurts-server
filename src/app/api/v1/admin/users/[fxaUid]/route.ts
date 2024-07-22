@@ -11,6 +11,7 @@ import { isAdmin } from "../../../../utils/auth";
 import {
   deleteOnerepProfileId,
   deleteSubscriber,
+  getHelloPrivacyCustomerId,
   getOnerepProfileId,
   getSubscriberByFxaUid,
 } from "../../../../../../db/tables/subscribers";
@@ -25,6 +26,11 @@ import {
   deleteScansForProfile,
 } from "../../../../../../db/tables/onerep_scans";
 import { changeSubscription } from "../../../../../functions/server/changeSubscription";
+import {
+  createEnrollment,
+  Profile as HelloPrivacyProfile,
+} from "../../../../../functions/server/helloprivacy";
+import { getProfile } from "../../../../../../db/tables/helloprivacy_profiles";
 
 export type GetUserStateResponseBody = {
   subscriberId: SubscriberRow["id"];
@@ -144,6 +150,7 @@ export async function PUT(
       }
 
       const onerepProfileId = await getOnerepProfileId(subscriber.id);
+      const customerId = await getHelloPrivacyCustomerId(subscriber.id);
 
       logger.info("admin_subscription_change", {
         actions,
@@ -159,6 +166,26 @@ export async function PUT(
             if (typeof onerepProfileId === "number") {
               await activateProfile(onerepProfileId);
               await optoutProfile(onerepProfileId);
+            }
+
+            if (typeof customerId === "string") {
+              const storedProfile = await getProfile(customerId);
+              const profile: HelloPrivacyProfile = {
+                birthYear: new Date(storedProfile.birth_year).getFullYear(),
+                birthMonth: new Date(storedProfile.birth_month).getMonth(),
+                name: {
+                  // FIXME prefix: storedProfile.name_prefix!,
+                  first: storedProfile.first_name,
+                  // FIXME middle: storedProfile.middle_name!,
+                  last: storedProfile.last_name,
+                  // FIXME suffix: storedProfile.name_prefix!,
+                },
+                // FIXME otherNames: storedProfile.other_names,
+                addresses: storedProfile.addresses,
+                // FIXME emailAddresses: storedProfile.email_addresses,
+                // FIXME phoneNumbers: storedProfile.phone_numbers,
+              };
+              await createEnrollment(customerId, profile);
             }
             logger.info("force_user_subscribe", {
               onerepProfileId,

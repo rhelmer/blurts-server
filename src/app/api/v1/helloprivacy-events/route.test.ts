@@ -4,7 +4,7 @@
 
 import { it, expect } from "@jest/globals";
 import { OnerepWebhookRequest } from "./route.ts";
-import { processOnerepWebhook } from "./processOnerepWebhook.ts";
+import { processOnerepWebhook } from "./processBrokerWebhook";
 
 import { optoutProfile } from "../../../functions/server/onerep";
 import { refreshStoredScanResults } from "../../../functions/server/refreshStoredScanResults";

@@ -52,6 +52,7 @@ import {
 } from "../../../../../../../constants";
 import { ExperimentData } from "../../../../../../../telemetry/generated/nimbus/experiments";
 import { PetitionBanner } from "../../../../../../components/client/PetitionBanner";
+import { Broker } from "../../../../../../functions/server/helloprivacy";
 
 export type TabType = "action-needed" | "fixed";
 
@@ -61,6 +62,7 @@ export type Props = {
   user: Session["user"];
   userBreaches: SubscriberBreach[];
   userScanData: LatestOnerepScanData;
+  brokerData: Broker[];
   isEligibleForFreeScan: boolean;
   isEligibleForPremium: boolean;
   monthlySubscriptionUrl: string;
@@ -184,7 +186,7 @@ export const View = (props: Props) => {
   const filteredExposures = filterExposures(tabSpecificExposures, filters);
   const exposureCardElems = filteredExposures.map((exposure: Exposure) => {
     const exposureCardKey = isScanResult(exposure)
-      ? "scan-" + exposure.onerep_scan_result_id
+      ? "scan-" + exposure.scan_record_id
       : "breach-" + exposure.id;
 
     return (
@@ -198,14 +200,14 @@ export const View = (props: Props) => {
               setActiveExposureCardKey(null);
               recordTelemetry("collapse", "click", {
                 button_id: isScanResult(exposure)
-                  ? `data_broker_card_${exposure.onerep_scan_result_id}`
+                  ? `data_broker_card_${exposure.scan_record_id}`
                   : `data_breach_card_${exposure.id}`,
               });
             } else {
               setActiveExposureCardKey(exposureCardKey);
               recordTelemetry("expand", "click", {
                 button_id: isScanResult(exposure)
-                  ? `data_broker_card_${exposure.onerep_scan_result_id}`
+                  ? `data_broker_card_${exposure.scan_record_id}`
                   : `data_breach_card_${exposure.id}`,
               });
             }
@@ -323,7 +325,7 @@ export const View = (props: Props) => {
     return (
       <>
         <h2 className={styles.exposuresAreaHeadline}>
-          {l10n.getString("dashboard-exposures-area-headline")}
+          {l10n.getString("dashboard-exposures-area-headline")} test
         </h2>
         {exposuresAreaDescription && (
           <p className={styles.exposuresAreaDescription}>

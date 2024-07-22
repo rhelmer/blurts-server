@@ -3,13 +3,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import type { Session } from "next-auth";
-import { getHelloPrivacyProfileId } from "../../../db/tables/helloprivacy_profiles";
 import {
   E164PhoneNumberString,
   ISO8601DateString,
 } from "../../../utils/parse.js";
 import { StateAbbr } from "../../../utils/states.js";
 import { logger } from "./logging";
+import { getHelloPrivacyCustomerId } from "../../../db/tables/subscribers.js";
+import { getLatestScanRecords } from "../../../db/tables/helloprivacy_scans";
 
 export type Profile = {
   // Year of birth, in YYYY format.
@@ -265,14 +266,13 @@ export async function isEligibleForFreeScan(
     throw new Error("No session with a known subscriber found");
   }
 
-  const profileId = await getHelloPrivacyProfileId(user.subscriber.id);
+  const customerId = await getHelloPrivacyCustomerId(user.subscriber.id);
 
-  if (!profileId) {
+  if (!customerId) {
     return true;
   }
 
-  // TODO implement
-  const scanResult = await getLatestScanResults(profileId);
+  const scanResult = await getLatestScanRecords(customerId);
 
   if (scanResult.scan) {
     logger.warn("User has already used free scan");
@@ -368,17 +368,17 @@ export async function deleteScan(id: string): Promise<JSON> {
  * @param customerId - The cross-reference ID provided with a Scan or Enrollment. Customer IDs can include any
  * printable ASCII characters except: ()<>"';
  * @param profile - The user's personal information.
+ * @param desiredVerifications - In the sandbox environment, this determines which brokers will verify results for the related enrollment scans.
  * @param enrollmentType - The name of the enrollment's subscription Plan. Defaults to "standard".
  * @param desiredResults - In the sandbox environment, this determines which brokers in this scan
  * (or all related scans, when creating an enrollment) will return results.
  * @param desiredRetries - In the sandbox environment, this determines which brokers in this scan
  * (or all related scans, when creating an enrollment) will simulate a "retry" ondition.
- * @param desiredVerifications - In the sandbox environment, this determines which brokers will verify results for the related enrollment scans.
  */
 export async function createEnrollment(
   customerId: string,
   profile: Profile,
-  desiredVerifications: string,
+  desiredVerifications?: string,
   enrollmentType?: string,
   desiredResults?: string,
   desiredRetries?: string,
@@ -462,8 +462,15 @@ export async function getScanRecords(id: string): Promise<ScanRecord[]> {
   )) as unknown as ScanRecord[];
 }
 
+export async function getAllScanRecords(
+  customerId: string,
+): Promise<ScanRecord[]> {
+  const scans = await getCustomerScans(customerId);
+  return scans.map((scan) => getScanRecords(scan.id.toString()));
+}
+
 /**
- * Get all records matched by a specific scan.
+ * Get all records matched by a specfic scan.
  *
  * @param id - the unique ID for a scan
  */
@@ -485,12 +492,14 @@ export async function getCustomer(id: string): Promise<Customer> {
 /**
  * Get all scans belonging to a specific customer
  *
- * @param id - The unique ID for a customer
+ * @param customerId - The unique ID for a customer
  */
-export async function getCustomerScans(id: string): Promise<Scan[]> {
+export async function getCustomerScans(
+  customerId: string,
+): Promise<CreateScanResponse[]> {
   return (await internalFetch(
-    `/v1/customers/${id}/scans`,
-  )) as unknown as Scan[];
+    `/v1/customers/${customerId}/scans`,
+  )) as unknown as CreateScanResponse[];
 }
 
 /**

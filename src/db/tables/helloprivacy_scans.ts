@@ -5,20 +5,27 @@
 import createDbConnection from "../connect.js";
 import { logger } from "../../app/functions/server/logging";
 
-import { ScanRecord, Scan } from "../../app/functions/server/helloprivacy";
 import {
-  HelloPrivacyScan,
+  ScanRecord,
+  CreateScanResponse,
+} from "../../app/functions/server/helloprivacy";
+import {
   HelloPrivacyScanRecordRow,
   HelloPrivacyScanRow,
 } from "../../knex-tables.js";
 
 const knex = createDbConnection();
 
-export async function getAllScansForProfile(
+export interface LatestHelloPrivacyScanData {
+  scan: HelloPrivacyScanRow | null;
+  results: HelloPrivacyScanRecordRow[];
+}
+
+export async function getAllScansForCustomer(
   customerId: string,
 ): Promise<HelloPrivacyScanRow[]> {
   const scans = (await knex("helloprivacy_scans")
-    .where("customerId", customerId)
+    .where("customer_id", customerId)
     .orderBy("created_at", "desc")) as HelloPrivacyScanRow[];
 
   return scans;
@@ -44,20 +51,56 @@ export async function getLatestScan(
   return scan ?? null;
 }
 
+export async function getLatestScanRecords(
+  customerId: string,
+): Promise<LatestHelloPrivacyScanData> {
+  const scan = await getLatestScan(customerId);
+
+  const results =
+    typeof scan === "undefined"
+      ? []
+      : ((await knex("helloprivacy_scan_records")
+          .select("helloprivacy_scan_records.*")
+          .select("helloprivacy_brokers.*")
+          // .distinctOn("recordUrl") // FIXME should be record_url
+          .where("helloprivacy_scans.customer_id", customerId)
+          .innerJoin(
+            "helloprivacy_scans",
+            "helloprivacy_scan_records.scan_id",
+            "helloprivacy_scans.scan_id",
+          )
+          .innerJoin(
+            "helloprivacy_brokers",
+            "helloprivacy_scan_records.broker_id",
+            "helloprivacy_brokers.broker_id",
+          )
+
+          // .orderBy("recordUrl") // FIXME should be record_url
+          .orderBy("customer_id", "desc")) as HelloPrivacyScanRecordRow[]);
+
+  return {
+    scan: scan ?? null,
+    results,
+  };
+}
+
 export async function setHelloPrivacyScan(
   customerId: string,
-  scan: HelloPrivacyScan,
+  scan: CreateScanResponse,
 ) {
-  await knex("helloprivacy_scans").insert({
-    scan_id: scan.id,
-    status: scan.status,
-    customer_id: customerId,
-    scan_type: scan.scanType,
-    broker_count: scan.brokerCount,
-    broker_ids: JSON.stringify(scan.brokerIds),
-    realtime: scan.realtime,
-    created_at: knex.fn.now(),
-  });
+  await knex("helloprivacy_scans")
+    .insert({
+      scan_id: scan.id,
+      status: scan.status,
+      customer_id: customerId,
+      scan_type: scan.scanType,
+      broker_count: scan.brokerCount,
+      broker_ids: JSON.stringify(scan.brokerIds),
+      realtime: scan.realtime,
+      created_at: knex.fn.now(),
+    })
+    .onConflict("customer_id")
+    .merge();
 
   logger.info("helloprivacy_scan_created", {
     helloPrivacyScanId: scan.id,
@@ -84,7 +127,7 @@ export async function addHelloPrivacyScanResults(
     education: scanRecord.education,
     employment: JSON.stringify(scanRecord.employment),
     gender: scanRecord.gender,
-    occupation: scanRecord.occupation,
+    occupation: JSON.stringify(scanRecord.occupation),
     property: JSON.stringify(scanRecord.property),
     recordUrl: scanRecord.recordUrl, // FIXME should be record_url
     created_at: scanRecord.createdAt,
@@ -162,25 +205,20 @@ export async function markBrokerScanResultAsResolved(
     .where("broker_scan_result_id", brokerScanResultId);
 }
 
-export async function getScansCount(
-  startDate: string,
-  endDate: string,
-  scanReason: Scan["reason"],
-) {
+export async function getScansCount(startDate: string, endDate: string) {
   return await knex("helloprivacy_scans")
     .count("id")
-    .whereBetween("created_at", [startDate, endDate])
-    .andWhere("broker_scan_reason", scanReason);
+    .whereBetween("created_at", [startDate, endDate]);
 }
 
-export async function getScansCountForProfile(
-  brokerProfileId: number,
+export async function getScansCountForCustomerId(
+  customerId: string,
 ): Promise<number> {
   return parseInt(
     ((
       await knex("helloprivacy_scans")
         .count("id")
-        .where("broker_profile_id", brokerProfileId)
+        .where("customer_id", customerId)
     )?.[0]?.["count"] as string) || "0",
   );
 }

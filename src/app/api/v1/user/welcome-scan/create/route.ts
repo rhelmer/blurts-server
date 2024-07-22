@@ -19,7 +19,11 @@ import {
 import type { CreateProfileRequest } from "../../../../../functions/server/onerep";
 import { meetsAgeRequirement } from "../../../../../functions/universal/user";
 import AppConstants from "../../../../../../appConstants";
-import { getSubscriberByFxaUid } from "../../../../../../db/tables/subscribers";
+import {
+  getHelloPrivacyCustomerId,
+  getSubscriberByFxaUid,
+  setHelloPrivacyCustomerId,
+} from "../../../../../../db/tables/subscribers";
 import {
   setOnerepProfileId,
   setOnerepScan,
@@ -33,14 +37,12 @@ import { getExperiments } from "../../../../../functions/server/getExperiments";
 import { getLocale } from "../../../../../functions/universal/getLocale";
 import { getL10n } from "../../../../../functions/l10n/serverComponents";
 import { getEnabledFeatureFlags } from "../../../../../../db/tables/featureFlags";
-import {
-  getProfile,
-  getProfileBySubscriberId,
-  setHelloPrivacyCustomerId,
-  setHelloPrivacyProfileDetails,
-} from "../../../../../../db/tables/helloprivacy_profiles";
+import { setHelloPrivacyProfileDetails } from "../../../../../../db/tables/helloprivacy_profiles";
 import { randomUUID } from "crypto";
-import { setHelloPrivacyScan } from "../../../../../../db/tables/helloprivacy_scans";
+import {
+  getScansCountForCustomerId,
+  setHelloPrivacyScan,
+} from "../../../../../../db/tables/helloprivacy_scans";
 
 export interface WelcomeScanBody {
   success: boolean;
@@ -146,28 +148,32 @@ export async function POST(
       }
 
       if (enabledFlags.includes("HelloPrivacy")) {
-        const profile = await getProfileBySubscriberId(
-          subscriber.id.toString(),
-        );
-        if (!profile) {
+        let customerId = await getHelloPrivacyCustomerId(subscriber.id);
+
+        // If no customer ID exists, generate one and store it.
+        if (!customerId) {
           // Create HelloPrivacy profile
-          const customerId = randomUUID();
+          customerId = randomUUID();
           await setHelloPrivacyProfileDetails(
             subscriber.id,
             customerId,
             profileData,
           );
           await setHelloPrivacyCustomerId(subscriber, customerId);
+        }
 
+        // Only start exposure scan if it has not been performed yet.
+        const scanCount = await getScansCountForCustomerId(customerId);
+        if (scanCount === 0) {
           // Start exposure scan
           const helloPrivacyProfile = {
             birthYear: new Date(profileData.birth_date!).getFullYear(),
             birthMonth: new Date(profileData.birth_date!).getMonth(),
             name: {
               first: profileData.first_name,
-              middle: profileData.middle_name,
+              // middle: profileData.middle_name,
               last: profileData.last_name,
-              suffix: profileData.name_suffix,
+              // suffix: profileData.name_suffix,
             },
             addresses: profileData.addresses,
           };

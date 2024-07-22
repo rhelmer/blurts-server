@@ -67,7 +67,7 @@ function generateCspData() {
     // `withSentryConfig` in next.config.js messes up the type, but we know that
     // it's a valid NextConfig with `images.remotePatterns` set:
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    `img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://firefoxusercontent.com https://mozillausercontent.com https://monitor.cdn.mozilla.net ${nextConfig
+    `img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://firefoxusercontent.com https://mozillausercontent.com https://monitor.cdn.mozilla.net ${nextConfig
       .images!.remotePatterns!.map(
         (pattern) =>
           `${pattern.protocol ?? "https"}://${pattern.hostname.replace(

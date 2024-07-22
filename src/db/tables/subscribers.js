@@ -508,6 +508,18 @@ async function getOnerepProfileId (subscriberId) {
 /* c8 ignore stop */
 
 /**
+ * @param {number} oneRepProfileId
+ */
+// Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
+/* c8 ignore start */
+async function getSubscriberByOnerepProfileId (oneRepProfileId) {
+  return await knex('subscribers')
+    .where('onerep_profile_id', oneRepProfileId)
+    .first();
+}
+/* c8 ignore stop */
+
+/**
  * @param {number} subscriberId
  */
 // Not covered by tests; mostly side-effects. See test-coverage.md#mock-heavy
@@ -519,6 +531,21 @@ async function getHelloPrivacyCustomerId (subscriberId) {
   return res?.[0]?.["helloprivacy_customer_id"] ?? null
 }
 /* c8 ignore stop */
+
+/**
+ * @param {import("knex/types/tables").SubscriberRow } subscriber
+ * @param {string} helloPrivacyCustomerId
+ */
+async function setHelloPrivacyCustomerId(
+  subscriber,
+  helloPrivacyCustomerId,
+) {
+  await knex("subscribers").where("id", subscriber.id).update({
+    helloprivacy_customer_id: helloPrivacyCustomerId,
+    // @ts-ignore FIXME figure out the JSDoc annotation for this, or move it to TS
+    updated_at: knex.fn.now(),
+  });
+}
 
 /**
  * @deprecated OBSOLETE: Delete as a part of MNTOR-3077
@@ -640,6 +667,7 @@ async function unresolveAllBreaches(oneRepProfileId) {
 
 export {
   getOnerepProfileId,
+  getSubscriberByOnerepProfileId,
   getSubscribersByHashes,
   getSubscriberById,
   getSubscriberByFxaUid,
@@ -666,6 +694,7 @@ export {
   incrementSignInCountForEligibleFreeUser,
   getSignInCount,
   getHelloPrivacyCustomerId,
+  setHelloPrivacyCustomerId,
   unresolveAllBreaches,
   knex as knexSubscribers
 }
